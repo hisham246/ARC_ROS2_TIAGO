@@ -1,0 +1,59 @@
+teleop_bridge:
+  ros__parameters:
+    base_link: "base_link"
+
+    left_pose_topic:  "/left_arm_cmd"
+    right_pose_topic: "/right_arm_cmd"
+    head_pose_topic:  "/head_cmd"
+    left_grip_topic: "/grip/left"
+    right_grip_topic: "/grip/right"
+
+    left_tool_trans: 
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0 #1.5707963
+      pitch: 0.0
+      yaw: 0.0
+
+    right_tool_trans: 
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0 #1.5707963
+      pitch: 0.0
+      yaw: 0.0
+
+    head_tool_trans: 
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+
+    left_world_trans: 
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+
+    right_world_trans: 
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+
+    head_world_trans: 
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+
+    sub_topic: "/xr_input"

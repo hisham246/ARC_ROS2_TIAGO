@@ -17,9 +17,16 @@ find_package(moveit_ros_planning_interface REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
-find_package(pick_ik REQUIRED)
+find_package(bio_ik REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_eigen REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(custom_teleop_messages REQUIRED)
+# find_package(backward_ros REQUIRED)
 
-add_executable(control_node src/Utils.cpp src/PICK_IK_Planner.cpp src/control_node.cpp)
+# src/Utils.cpp src/BIO_IK_Planner.cpp
+
+add_executable(control_node src/Utils.cpp src/BIO_IK_Planner.cpp src/control_node.cpp)
 target_include_directories(control_node
   PUBLIC include
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -34,11 +41,37 @@ ament_target_dependencies(
   "rclcpp"
   "geometry_msgs"
   "trajectory_msgs"
-  "pick_ik"
+  "bio_ik"
+)
+
+add_executable(teleop_msg_bridge src/teleop_msg_bridge.cpp)
+target_include_directories(teleop_msg_bridge
+  PUBLIC include
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(teleop_msg_bridge PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  teleop_msg_bridge
+  "rclcpp"
+  "geometry_msgs"
+  "custom_teleop_messages"
+  "tf2_ros"
+  "tf2_eigen"
+  "tf2_geometry_msgs"
 )
 
 install(TARGETS control_node
+  teleop_msg_bridge
   DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
+install(DIRECTORY
+  config
+  DESTINATION share/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

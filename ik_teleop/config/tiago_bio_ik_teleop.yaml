@@ -1,0 +1,35 @@
+IK_control_node:
+  ros__parameters:
+    frequency: 20.0
+    main_group: "both_arms_torso"
+    root_link: "torso_link_fixed"
+    groups: ["arm_right", "torso", "arm_left"]
+    center_joints_weight: 0.0
+    min_displacement_weight: 0.01
+    ik_timeout: 0.02
+    default_max_speed: 0.1
+    
+    arm_left:
+      passive_group: false
+      position_weight: 2.0
+      orient_weight: 1.0
+      pose_weight: 0.0
+      goal_link: "arm_left_tool_link"
+      sub_topic: "/left_arm_cmd"
+      pub_topic: "/arm_left_controller/joint_trajectory"
+    arm_right:
+      passive_group: false
+      position_weight: 2.0
+      orient_weight: 1.0
+      pose_weight: 0.0
+      goal_link: "arm_right_tool_link"
+      sub_topic: "/right_arm_cmd"
+      pub_topic: "/arm_right_controller/joint_trajectory"
+    torso:
+      passive_group: false
+      position_weight: 1.0
+      orient_weight: 0.0
+      pose_weight: 0.0
+      goal_link: "torso_lift_link"
+      sub_topic: "/head_cmd"
+      pub_topic: "/torso_controller/joint_trajectory"

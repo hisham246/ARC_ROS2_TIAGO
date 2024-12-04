@@ -1,7 +1,6 @@
 #ifndef BIO_IK_UTILS
 #define BIO_IK_UTILS
-#include <tf2_eigen/tf2_eigen.h>
-#include <pick_ik/goal.hpp>
+#include <tf2_eigen/tf2_eigen.hpp>
 
 namespace teleop_utils
 {

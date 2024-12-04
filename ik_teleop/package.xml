@@ -16,8 +16,13 @@
   <depend>rclcpp</depend>
   <depend>geometry_msgs</depend>
   <depend>trajectory_msgs</depend>
-  <depend>pick_ik</depend>
-
+  <depend>bio_ik</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_eigen</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>custom_teleop_messages</depend>
+  <!-- <depend>backward_ros</depend> -->
+  
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
