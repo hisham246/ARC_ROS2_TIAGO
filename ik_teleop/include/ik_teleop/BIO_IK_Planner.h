@@ -98,14 +98,14 @@ protected:
     double center_weight_, min_disp_weight_, ik_timeout_;
 
     std::string main_group_, root_link_;
-    std::vector<std::string> groups_;
+    std::vector<std::string> groups_, min_displacement_joints_;
 
     std::vector<BIO_IK_Group*> bio_groups_;
 
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
     planning_scene_monitor::PlanningSceneMonitorPtr planning_scene_monitor_;
-    std::vector<double> previous_joints_;
+    std::vector<double> previous_joints_, min_displacement_joints_weights_;
     
     moveit::core::RobotStatePtr current_state_, goal_state_;
 

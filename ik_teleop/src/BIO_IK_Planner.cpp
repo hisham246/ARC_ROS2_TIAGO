@@ -27,6 +27,10 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
 
     min_disp_weight_ = Node_->get_parameter("min_displacement_weight").as_double();
     
+    min_displacement_joints_ = Node_->get_parameter("min_displacement_joints").as_string_array();
+    
+    min_displacement_joints_weights_= Node_->get_parameter("min_displacement_joints_weights").as_double_array();
+
     ik_timeout_ = Node_->get_parameter("ik_timeout").as_double();
 
     default_max_speed = Node_->get_parameter("default_max_speed").as_double();
@@ -164,7 +168,15 @@ bool BIO_IK_Planner::plan()
             query.goals.emplace_back(new bio_ik::CenterJointsGoal(center_weight_, true));
         if (min_disp_weight_)
             query.goals.emplace_back(new bio_ik::MinimalDisplacementGoal(min_disp_weight_, true));
-
+        
+        if (min_displacement_joints_.size())
+        {
+            for (int i=0; i < std::min(min_displacement_joints_weights_.size(),min_displacement_joints_.size()); i++)
+            {
+                query.goals.emplace_back(new MinimizeJointVariableGoal(min_displacement_joints_[i], min_displacement_joints_weights_[i]));
+            }
+        }
+        
         EigenSTL::vector_Isometry3d poses;
         std::vector<std::string> goal_tips;
 

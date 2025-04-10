@@ -8,6 +8,8 @@ IK_control_node:
     min_displacement_weight: 0.01
     ik_timeout: 0.02
     default_max_speed: 0.1
+    min_displacement_joints: []
+    min_displacement_joints_weights: []
     
     arm_left:
       passive_group: false

@@ -1,6 +1,7 @@
 #ifndef BIO_IK_UTILS
 #define BIO_IK_UTILS
 #include <tf2_eigen/tf2_eigen.hpp>
+#include <bio_ik/bio_ik.hpp>
 
 namespace teleop_utils
 {
@@ -10,5 +11,34 @@ namespace teleop_utils
 
     double get_angular_movement(std::vector<double> new_position, std::vector<double> old_position);
 }
+
+class MinimizeJointVariableGoal : public bio_ik::Goal
+{
+    std::string variable_name;
+    double variable_position;
+
+public:
+    MinimizeJointVariableGoal()
+    {
+    }
+    MinimizeJointVariableGoal(const std::string& variable_name, double weight = 1.0, bool secondary = false)
+        : variable_name(variable_name)
+    {
+        weight_ = weight;
+        secondary_ = secondary;
+    }
+    const std::string& getVariableName() const { return variable_name; }
+    void setVariableName(const std::string& n) { variable_name = n; }
+    virtual void describe(bio_ik::GoalContext& context) const
+    {
+        Goal::describe(context);
+        context.addVariable(variable_name);
+    }
+    virtual double evaluate(const bio_ik::GoalContext& context) const
+    {
+        double d = context.getProblemVariableInitialGuess(0) - context.getProblemVariablePosition(0);
+        return d * d;
+    }
+};
 
 #endif

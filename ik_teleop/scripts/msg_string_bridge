@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+import importlib
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+from rclpy_message_converter import json_message_converter
+
+class message_bridge(Node):
+    def __init__(self):
+        super().__init__('message_bridge')
+        self.Subscribers = []
+
+        self.declare_parameter('subscribers', [])
+        subs = self.get_parameter('subscribers').get_parameter_value().string_array_value
+
+        self.declare_parameter('pub_topic', "data_outgoing")
+        pub_topic = self.get_parameter("~pub_topic").get_parameter_value().string_value
+
+        self.main_pub = self.create_publisher(String, pub_topic)
+
+        for sub in subs:
+            sub_topic, msg_type, sub_type = self.get_parameters(sub)
+            self.Subscribers.append(self.create_subscription(sub_type,sub_topic, lambda msg: self.sub_callback(msg, sub_topic, msg_type)))
+    
+    def get_parameters(self, namespace):
+        self.declare_parameter(namespace+"/topic")
+        topic = self.get_parameter(namespace+"/topic").get_parameter_value().string_value
+
+        self.declare_parameter(namespace+"/msg_type")
+        topic = self.get_parameter(namespace+"/msg_type")
+
+        return topic, msg_type_string, self.get_message_type(msg_type_string)
+
+    def get_message_type(self, msg_type_str):
+        module_name, class_name = msg_type_str.rsplit('/', 1)
+        module = importlib.import_module(f"{module_name}.msg")
+        return getattr(module, class_name)
+    
+    def sub_callback(self, msg, sub_topic, msg_type):
+        new_msg = String()
+        new_msg.data = sub_topic+"!"+msg_type+"!"+json_message_converter.convert_ros_message_to_json(msg)
+        self.main_pub.publish(new_msg)
+
+def main(args=None):
+    rclpy.init()
+    bridge = message_bridge()
+
+    rclpy.spin(bridge)
+
+    bridge.destroy_node()
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
