@@ -1,0 +1,45 @@
+[submodule "bio_ik"]
+    path=bio_ik
+    url=https://github.com/bit-bots/bio_ik.git
+    branch=ros2
+
+[submodule "fp"]
+    path=fp
+    url=https://github.com/tylerjw/fp
+    branch=main
+
+[submodule "pal_gazebo_worlds"]
+    path=pal_gazebo_worlds
+    url=https://github.com/pal-robotics/pal_gazebo_worlds.git
+    branch=humble-devel
+
+[submodule "pick_ik"]
+    path=pick_ik
+    url=https://github.com/PickNikRobotics/pick_ik.git
+    branch=main
+
+[submodule "tiago_dual_moveit_config"]
+    path=tiago_dual_moveit_config
+    url=https://github.com/pal-robotics/tiago_dual_moveit_config.git
+    branch=humble-devel
+
+[submodule "tiago_dual_navigation"]
+    path=tiago_dual_navigation
+    url=https://github.com/pal-robotics/tiago_dual_navigation.git
+    branch=humble-devel
+
+[submodule "tiago_dual_robot"]
+    path=tiago_dual_robot
+    url=https://github.com/pal-robotics/tiago_dual_robot.git
+    branch=humble-devel
+
+[submodule "tiago_dual_robot"]
+    path=tiago_dual_robot
+    url=https://github.com/pal-robotics/tiago_dual_robot.git
+    branch=humble-devel
+
+[submodule "tiago_dual_simulation"]
+    path=tiago_dual_simulation
+    url=https://github.com/pal-robotics/tiago_dual_simulation.git
+    branch=humble-devel
+
