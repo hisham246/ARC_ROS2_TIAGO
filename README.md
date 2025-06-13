@@ -2,6 +2,12 @@
 This repo is for IK based Teleoperation. It is currently setup to work with the TiagoPro Docker Container. This will soon be ported to the Nextage Robot
 
 # Installation
+When pulling this repo ensure you are using the --recurse-submodules option.
+
+```
+git clone https://github.com/AdamSanderson93/ARC_ROS2_TIAGO.git --recurse-submodules
+```
+
 All required packages are installed using the install_deps.sh file.
 
 ```
