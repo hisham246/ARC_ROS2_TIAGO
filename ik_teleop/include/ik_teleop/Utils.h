@@ -41,4 +41,23 @@ public:
     }
 };
 
+class PositionZGoal : public bio_ik::LinkGoalBase
+{
+    tf2::Vector3 position_;
+
+public:
+    PositionZGoal()
+        : position_(0, 0, 0)
+    {
+    }
+    PositionZGoal(const std::string& link_name, const tf2::Vector3& position, double weight = 1.0)
+        : bio_ik::LinkGoalBase(link_name, weight)
+        , position_(position)
+    {
+    }
+    inline const tf2::Vector3& getPosition() const { return position_; }
+    inline void setPosition(const tf2::Vector3& position) { position_ = position; }
+    virtual double evaluate(const bio_ik::GoalContext& context) const { return abs(context.getLinkFrame().getPosition().z() - getPosition().z()); }
+};
+
 #endif

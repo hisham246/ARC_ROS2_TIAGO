@@ -1,0 +1,9 @@
+<launch>
+    <node pkg="gripper_traj_passthrough" exec="gripper_traj_node" name="gripper_traj_node_left">
+        <param from="$(find-pkg-share gripper_traj_passthrough)/config/pal_gripper_left.yaml"/>
+    </node>
+
+    <node pkg="gripper_traj_passthrough" exec="gripper_traj_node" name="gripper_traj_node_right">
+        <param from="$(find-pkg-share gripper_traj_passthrough)/config/pal_gripper_right.yaml"/>
+    </node>
+</launch>

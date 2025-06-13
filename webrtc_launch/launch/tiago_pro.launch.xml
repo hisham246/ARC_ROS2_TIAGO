@@ -1,0 +1,124 @@
+<launch>
+
+
+    <!-- <arg name="server_url" default="http://adamsanderson.net:6789"/> -->
+    <arg name="server_url" default="http://192.168.2.113:6789"/>
+
+    <!-- Audio Video Topics -->
+    <arg name="input_camera_topic" default="/head_front_camera/color/image_raw"/>
+    <arg name="output_webrtc_image_topic" default="webrtc_image"/>
+    <arg name="input_audio_topic" default="audio_in"/>
+    <arg name="output_audio_mixed_topic" default="audio_mixed"/>
+    <arg name="output_webrtc_audio_topic" default="webrtc_audio"/>
+
+    <!-- Data Topics -->
+    <arg name="input_topic" default="webrtc_data_outgoing"/>
+    <arg name="output_topic" default="webrtc_data_incoming"/>
+    
+    <node name="topic_streamer" pkg="opentera_webrtc_ros" exec="topic_streamer" respawn="false">
+        <param name="is_stand_alone" value="true" />     
+        <param name="video_queue_size" value="5"/>
+        <param name="audio_queue_size" value="5"/> 
+
+        <param name="video_stream">
+            <param name="can_send_video_stream" value="true"/>
+            <param name="can_receive_video_stream" value="true"/>
+            <param name="is_screen_cast" value="false"/>
+            <param name="needs_denoising" value="false"/>
+        </param>
+        <param name="video_codecs">
+            <param name="forced_codecs" value="['']"/>
+            <param name="force_gstreamer_hardware_acceleration" value="false"/>
+            <param name="use_gstreamer_software_encoder_decoder" value="false"/>
+        </param>
+        <param name="audio_stream">
+            <param name="can_send_audio_stream" value="true"/>
+            <param name="can_receive_audio_stream" value="true"/>
+            <param name="sound_card_total_delay_ms" value="0"/>
+            <param name="echo_cancellation" value="true"/>
+            <param name="auto_gain_control" value="false"/>
+            <param name="noise_suppression" value="false"/>
+            <param name="high_pass_filter" value="false"/>
+            <param name="stereo_swapping" value="false"/>
+            <param name="transient_suppression" value="true"/>
+        </param>
+
+        <param name="signaling">
+            <param name="server_url" value="$(var server_url)"/>
+            <param name="client_name" value="streamer"/>
+            <param name="room_name" value="chat"/>
+            <param name="room_password" value="UW_Test"/>
+            <param name="verify_ssl" value="false"/>
+        </param>
+
+        <remap from="ros_image" to="$(var input_camera_topic)"/>
+        <remap from="webrtc_image" to="$(var output_webrtc_image_topic)"/>
+        <remap from="audio_in" to="$(var input_audio_topic)"/>
+        <remap from="audio_mixed" to="$(var output_audio_mixed_topic)"/>
+        <remap from="webrtc_audio" to="$(var output_webrtc_audio_topic)"/>
+    </node>
+
+
+    <node name="data_channel_bridge" pkg="opentera_webrtc_ros" exec="data_channel_bridge" respawn="false">
+        <param name="is_stand_alone" value="true" />        
+        <param name="signaling">
+            <param name="server_url" value="$(var server_url)" />  
+            <param name="client_name" value="data_stream" />  
+            <param name="room_name" value="data" />  
+            <param name="room_password" value="UW_Test" />  
+            <param name="verify_ssl" value="false" />  
+        </param>
+
+        <remap from="webrtc_data_outgoing" to="$(var input_topic)"/>
+        <remap from="webrtc_data_incoming" to="$(var output_topic)"/>
+        <remap from="webrtc_peer_status" to="webrtc_peer_status_data"/>
+    </node>
+
+        <!-- <include file="$(find teleop_msg_bridge)/launch/json_msg_bridge.launch"/> -->  
+    <node name="msg_string_bridge" pkg="ik_teleop" exec="msg_string_bridge.py" output="screen">
+        <param name="subs" value="[]" />  
+        <param name="pub_topic" value="/webrtc_data_outgoing" />  
+    </node>
+
+    <node name="string_msg_bridge" pkg="ik_teleop" exec="string_msg_bridge.py" output="screen">
+        <param name="sub_topic" value="/webrtc_data_incoming" />  
+    </node>
+
+    <!-- <node name="capture_node" pkg="audio_utils" exec="capture_node" respawn="false">
+        <param name="backend" value="alsa" />        
+        <param name="device" value="default" />
+        <param name="format" value="signed_16" />        
+        <param name="channel_count" value="1" />        
+        <param name="sampling_frequency" value="48000" />        
+        <param name="frame_sample_count" value="480" />    
+        <param name="latency_us" value="0" />
+
+        <remap from="audio_out" to="$(var input_audio_topic)"/>
+    
+    </node> -->
+
+    <node name="opentera_audio_relay_node" pkg="webrtc_launch" exec="opentera_audio_relay_node" respawn="false">
+        <param name="sub_top" value="$(var output_webrtc_audio_topic)" />        
+        <param name="pub_top" value="output_audio_frame" />        
+    </node>
+
+    <node name="playback_node" pkg="audio_utils" exec="playback_node" respawn="false">
+        <param name="backend" value="alsa" />        
+        <param name="device" value="default" />        
+        <param name="format" value="signed_16" />        
+        <param name="channel_count" value="1" />        
+        <param name="sampling_frequency" value="48000" />        
+        <param name="frame_sample_count" value="480" />    
+        <param name="latency_us" value="0" />        
+
+        <remap from="audio_in" to="output_audio_frame"/>
+    </node>
+
+    <node name="cmd_vel_relay" exec="relay" pkg="topic_tools" args="/cmd_vel /movo/cmd_vel" />
+
+    <node name="opentera_video_relay_node" pkg="webrtc_launch" exec="opentera_video_relay_node" respawn="false">
+        <param name="sub_top" value="$(var output_webrtc_image_topic)" />        
+        <param name="pub_top" value="output_video_frame" />  
+    </node>
+
+</launch>

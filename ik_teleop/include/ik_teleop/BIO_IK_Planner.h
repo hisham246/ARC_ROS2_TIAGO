@@ -81,7 +81,7 @@ protected:
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr sub_;
         bool initialized_=false, passive_group_=false, new_message_=false;
         
-        double position_weight_, orientation_weight_, pose_weight_, freq_;
+        double position_weight_, orientation_weight_, pose_weight_, z_weight_, freq_;
         
 
         tf2::Transform goal_pose_;

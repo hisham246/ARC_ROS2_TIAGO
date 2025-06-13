@@ -24,6 +24,10 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(custom_teleop_messages REQUIRED)
 # find_package(backward_ros REQUIRED)
 
+find_package(ament_cmake_python REQUIRED)
+
+ament_python_install_package(${PROJECT_NAME})
+
 # src/Utils.cpp src/BIO_IK_Planner.cpp
 
 add_executable(control_node src/Utils.cpp src/BIO_IK_Planner.cpp src/control_node.cpp)
@@ -73,6 +77,10 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}
 )
 
+install(DIRECTORY
+  ${PROJECT_NAME}
+  DESTINATION lib/
+)
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights

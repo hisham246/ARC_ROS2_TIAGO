@@ -108,19 +108,19 @@ class bridge : public rclcpp::Node
         this->declare_parameter(param+".x", 0.0);
         temp.position.x = this->get_parameter(param+".x").as_double();
         this->declare_parameter(param+".y", 0.0);
-        temp.position.x = this->get_parameter(param+".y").as_double();
+        temp.position.y = this->get_parameter(param+".y").as_double();
         this->declare_parameter(param+".z", 0.0);
-        temp.position.x = this->get_parameter(param+".z").as_double();
+        temp.position.z = this->get_parameter(param+".z").as_double();
 
         this->declare_parameter(param+".roll", 0.0);
-        temp.position.x = this->get_parameter(param+".roll").as_double();
+        roll = this->get_parameter(param+".roll").as_double();
         this->declare_parameter(param+".pitch", 0.0);
-        temp.position.x = this->get_parameter(param+".pitch").as_double();
+        pitch = this->get_parameter(param+".pitch").as_double();
         this->declare_parameter(param+".yaw", 0.0);
-        temp.position.x = this->get_parameter(param+".yaw").as_double();
+        yaw = this->get_parameter(param+".yaw").as_double();
 
         temp.orientation = quaternion_from_rpy(roll, pitch, yaw);
-
+        
         Eigen::Affine3d output;
 
         tf2::convert(temp, output);

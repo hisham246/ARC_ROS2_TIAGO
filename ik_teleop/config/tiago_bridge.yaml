@@ -13,7 +13,7 @@ teleop_bridge:
       y: 0.0
       z: 0.0
       roll: 0.0 #1.5707963
-      pitch: 0.0
+      pitch: 1.5707963
       yaw: 0.0
 
     right_tool_trans: 
@@ -21,7 +21,7 @@ teleop_bridge:
       y: 0.0
       z: 0.0
       roll: 0.0 #1.5707963
-      pitch: 0.0
+      pitch: 1.5707963
       yaw: 0.0
 
     head_tool_trans: 

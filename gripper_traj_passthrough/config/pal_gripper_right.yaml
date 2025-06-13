@@ -1,0 +1,14 @@
+gripper_traj_node_right:
+  ros__parameters:
+    pub_top: "/gripper_right_controller/joint_trajectory"
+    sub_top: "/grip/right"
+
+    pub_type: joint_trajectory #joint_trajectory or gripper_command
+
+    finger_joints: ['gripper_right_finger_joint',]
+
+    gripper_right_finger_joint:
+      joint_name: "gripper_right_finger_joint"
+      open_angle: 0.0
+      closed_angle: 0.802850778
+      max_speed: 2.0

@@ -1,0 +1,42 @@
+arm_left:
+  kinematics_solver: bio_ik/BioIKKinematicsPlugin
+  kinematics_solver_search_resolution: 0.005
+  kinematics_solver_timeout: 0.005
+  goal_joint_tolerance: 0.005
+  goal_position_tolerance: 0.0005
+  goal_orientation_tolerance: 0.005
+arm_right:
+  kinematics_solver: bio_ik/BioIKKinematicsPlugin
+  kinematics_solver_search_resolution: 0.005
+  kinematics_solver_timeout: 0.005
+  goal_joint_tolerance: 0.005
+  goal_position_tolerance: 0.0005
+  goal_orientation_tolerance: 0.005
+torso:
+  kinematics_solver: bio_ik/BioIKKinematicsPlugin
+  kinematics_solver_search_resolution: 0.005
+  kinematics_solver_timeout: 0.005
+  goal_joint_tolerance: 0.005
+  goal_position_tolerance: 0.0005
+  goal_orientation_tolerance: 0.005
+arm_left_torso:
+  kinematics_solver: bio_ik/BioIKKinematicsPlugin
+  kinematics_solver_search_resolution: 0.005
+  kinematics_solver_timeout: 0.005
+  goal_joint_tolerance: 0.005
+  goal_position_tolerance: 0.0005
+  goal_orientation_tolerance: 0.005
+arm_right_torso:
+  kinematics_solver: bio_ik/BioIKKinematicsPlugin
+  kinematics_solver_search_resolution: 0.005
+  kinematics_solver_timeout: 0.005
+  goal_joint_tolerance: 0.005
+  goal_position_tolerance: 0.0005
+  goal_orientation_tolerance: 0.005
+full_body:
+  kinematics_solver: bio_ik/BioIKKinematicsPlugin
+  kinematics_solver_search_resolution: 0.005
+  kinematics_solver_timeout: 0.005
+  goal_joint_tolerance: 0.005
+  goal_position_tolerance: 0.0005
+  goal_orientation_tolerance: 0.005

@@ -7,6 +7,7 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
     goal_state_(nullptr)
 {
     Node_ = Node;
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Starting Planner");
     robot_model_loader_ = std::make_shared<robot_model_loader::RobotModelLoader>(Node_);
     tf_buffer = std::make_unique<tf2_ros::Buffer>(Node_->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
@@ -14,25 +15,35 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
     double default_max_speed;
 
     // Load parameters
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load Frequency");
     hz = Node_->get_parameter("frequency").as_double();
 
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load main group");
     main_group_ = Node_->get_parameter("main_group").as_string();
 
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load root link");
     root_link_ = Node_->get_parameter("root_link").as_string();
 
     std::vector<std::string> empty;
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load groups");
     groups_ = Node_->get_parameter("groups").as_string_array();
 
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load center joint weights");
     center_weight_ = Node_->get_parameter("center_joints_weight").as_double();
 
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load min disp weight");
     min_disp_weight_ = Node_->get_parameter("min_displacement_weight").as_double();
     
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load min disp joints");
     min_displacement_joints_ = Node_->get_parameter("min_displacement_joints").as_string_array();
     
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load min disp joints weights");
     min_displacement_joints_weights_= Node_->get_parameter("min_displacement_joints_weights").as_double_array();
 
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load ik timeout");
     ik_timeout_ = Node_->get_parameter("ik_timeout").as_double();
 
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load max speed");
     default_max_speed = Node_->get_parameter("default_max_speed").as_double();
     
     planning_scene_monitor_ = std::make_shared<planning_scene_monitor::PlanningSceneMonitor>(Node_, robot_model_loader_, "planning_scene_monitor");
@@ -81,6 +92,12 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
     root_link_ = robot_model->getRootLink()->getName();
     
     // root_link_ = jmg->getCommonRoot()->getParentLinkModel()->getName();
+    const std::vector<std::string>& joint_names = jmg->getVariableNames();
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "joints");
+    for (const std::string& name : joint_names)
+    {
+        RCLCPP_WARN_STREAM(Node_->get_logger(), name);
+    }
     
     for (const std::string& group_name : groups_)
     {
@@ -134,7 +151,8 @@ bool BIO_IK_Planner::ready()
     {
         if (!group->ready())
         {
-            RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 1.0, group->group_name_ + std::string(" Not Ready Yet"));
+            auto& clock = *(Node_->get_clock());
+            RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), clock, 5.0, group->group_name_ + std::string(" Not Ready Yet"));
             return false;
         }
     }
@@ -326,6 +344,7 @@ joint_names_(joint_names),
 freq_(hz)
 {
     std::string sub_topic, pub_topic;
+    RCLCPP_WARN_STREAM(parent_.Node_->get_logger(), "Load group params");
     passive_group_ = parent.Node_->get_parameter(group_name_+".passive_group").as_bool();
 
     if (!passive_group_)
@@ -336,6 +355,8 @@ freq_(hz)
         
         pose_weight_ = parent.Node_->get_parameter(group_name_+".pose_weight").as_double();
         
+        z_weight_ = parent.Node_->get_parameter(group_name_+".z_weight").as_double();
+
         goal_link_ = parent.Node_->get_parameter(group_name_+".goal_link").as_string();
         
         auto const* link_model = parent.robot_model->getLinkModel(goal_link_);
@@ -375,6 +396,8 @@ void BIO_IK_Planner::BIO_IK_Group::add_goals(std::vector<std::unique_ptr<bio_ik:
         goal_list.emplace_back(new bio_ik::PositionGoal(goal_link_, goal_pose_.getOrigin(), position_weight_));
     if (orientation_weight_)
         goal_list.emplace_back(new bio_ik::OrientationGoal(goal_link_, goal_pose_.getRotation(), orientation_weight_));
+    if (z_weight_)
+        goal_list.emplace_back(new PositionZGoal(goal_link_, goal_pose_.getOrigin(), z_weight_));
     
     group_mutex_.unlock();
 }

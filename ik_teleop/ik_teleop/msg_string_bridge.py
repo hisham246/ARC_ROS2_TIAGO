@@ -2,34 +2,31 @@
 
 import importlib
 import rclpy
-from rclpy.node import Node
+import rclpy.node
 from std_msgs.msg import String
 
 from rclpy_message_converter import json_message_converter
 
-class message_bridge(Node):
+class message_bridge(rclpy.node.Node):
     def __init__(self):
         super().__init__('message_bridge')
-        self.Subscribers = []
+        self.subs = []
+        
+        subs = self.declare_parameter('subs', []).get_parameter_value().string_array_value
 
-        self.declare_parameter('subscribers', [])
-        subs = self.get_parameter('subscribers').get_parameter_value().string_array_value
+        pub_topic = self.declare_parameter("pub_topic", "data_outgoing").get_parameter_value().string_value
 
-        self.declare_parameter('pub_topic', "data_outgoing")
-        pub_topic = self.get_parameter("~pub_topic").get_parameter_value().string_value
-
-        self.main_pub = self.create_publisher(String, pub_topic)
+        self.main_pub = self.create_publisher(String, pub_topic, 10)
 
         for sub in subs:
             sub_topic, msg_type, sub_type = self.get_parameters(sub)
-            self.Subscribers.append(self.create_subscription(sub_type,sub_topic, lambda msg: self.sub_callback(msg, sub_topic, msg_type)))
+            self.subs.append(self.create_subscription(sub_type,sub_topic, lambda msg: self.sub_callback(msg, sub_topic, msg_type), 10))
     
     def get_parameters(self, namespace):
-        self.declare_parameter(namespace+"/topic")
-        topic = self.get_parameter(namespace+"/topic").get_parameter_value().string_value
+        
+        topic = self.declare_parameter(namespace+"/topic").get_parameter_value().string_value
 
-        self.declare_parameter(namespace+"/msg_type")
-        topic = self.get_parameter(namespace+"/msg_type")
+        msg_type_string = self.declare_parameter(namespace+"/msg_type").get_parameter_value().string_array_value
 
         return topic, msg_type_string, self.get_message_type(msg_type_string)
 
@@ -46,11 +43,7 @@ class message_bridge(Node):
 def main(args=None):
     rclpy.init()
     bridge = message_bridge()
-
     rclpy.spin(bridge)
-
-    bridge.destroy_node()
-    rclpy.shutdown()
 
 
 if __name__ == '__main__':

@@ -8,7 +8,11 @@
                 "/opt/ros/humble/include",
                 "${workspaceFolder}/bio_ik/include",
                 "/opt/ros/humble/include/rclcpp",
-                "/usr/include/eigen3"
+                "/usr/include/eigen3",
+                "/opt/ros/humble/include/rcl",
+                "/tiago_ws/install/*/include/**",
+                "/tiago_ws/install/opentera_webrtc_ros_msgs/include/opentera_webrtc_ros_msgs",
+                "/opt/ros/humble/include/sensor_msgs"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
