@@ -16,7 +16,7 @@ int main(int argc, char** argv)
     BIO_IK_Planner planner(node);
 
     rclcpp::Rate rate(planner.hz);
-    rclcpp::Rate cpu_limitter(10);
+    rclcpp::Rate cpu_limitter(1000);
 
     while (rclcpp::ok())
     {

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package format="3">
+
+  <name>nextage_fillie_open_description</name>
+  <version>1.0.1</version>
+  <description>As a part of rtmros_nextage_fillie_open package that is a ROS interface for <a href = " http://www.kawadarobot.co.jp/en/nextage/">Nextage Fillie</a> dual-armed robot from Kawada Robotics Corporation, this package provides its 3D model that can be used in simulation and <a href = "http://ros.org/wiki/moveit">MoveIt!</a>-based motion planning tasks.
+  </description>
+  <maintainer email="opensource@kawadarobot.co.jp">KRC</maintainer>
+  <author>Kei Okada</author>
+  <author>Isaac Isao Saito</author>
+  <author email="w.yasuda@opensource-robotics.tokyo.jp">Wataru Yasuda</author>
+  <license>BSD</license>
+  <license>KRC Robot Model License</license>
+
+  <buildtool_depend>ament_cmake_auto</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <exec_depend>xacro</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  <test_depend>launch_testing_ament_cmake</test_depend>
+  <test_depend>urdf_test</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

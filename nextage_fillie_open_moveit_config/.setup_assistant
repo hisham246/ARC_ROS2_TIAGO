@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: nextage_fillie_open_description
+    relative_path: urdf/FillieOpen.urdf
+  srdf:
+    relative_path: config/NEXTAGE.srdf
+  package_settings:
+    author_name: todo@todo.com
+    author_email: todo@todo.com
+    generated_timestamp: 1750271569

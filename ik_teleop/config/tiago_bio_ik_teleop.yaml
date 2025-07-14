@@ -4,10 +4,12 @@ IK_control_node:
     main_group: "full_body"
     root_link: "torso_base_link"
     groups: ["arm_right", "torso", "arm_left", "head"]
+    # pose_goals: []
+    # joint_goals: []
     center_joints_weight: 0.0
     min_displacement_weight: 0.01
     ik_timeout: 0.02
-    default_max_speed: 0.1
+    default_max_speed: 1.0
     min_displacement_joints: ["torso_lift_joint"]
     min_displacement_joints_weights: [0.1]
     
@@ -47,4 +49,4 @@ IK_control_node:
       goal_link: "head_screen_link"
       sub_topic: "/head_cmd"
       pub_topic: "/head_controller/joint_trajectory"
-    # joint_groups: ["head"]
+    

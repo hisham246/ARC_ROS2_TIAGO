@@ -60,4 +60,6 @@ public:
     virtual double evaluate(const bio_ik::GoalContext& context) const { return abs(context.getLinkFrame().getPosition().z() - getPosition().z()); }
 };
 
+tf2::Transform eigenIsometry3dToTf2Transform(const Eigen::Isometry3d& eigen_transform);
+
 #endif

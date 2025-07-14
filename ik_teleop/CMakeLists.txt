@@ -16,13 +16,15 @@ find_package(moveit_ros_planning REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
 find_package(trajectory_msgs REQUIRED)
 find_package(bio_ik REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_eigen REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(custom_teleop_messages REQUIRED)
-# find_package(backward_ros REQUIRED)
+find_package(backward_ros REQUIRED)
 
 find_package(ament_cmake_python REQUIRED)
 
@@ -44,6 +46,7 @@ ament_target_dependencies(
   "moveit_ros_planning_interface"
   "rclcpp"
   "geometry_msgs"
+  "sensor_msgs"
   "trajectory_msgs"
   "bio_ik"
 )
@@ -58,6 +61,7 @@ ament_target_dependencies(
   teleop_msg_bridge
   "rclcpp"
   "geometry_msgs"
+  "sensor_msgs"
   "custom_teleop_messages"
   "tf2_ros"
   "tf2_eigen"

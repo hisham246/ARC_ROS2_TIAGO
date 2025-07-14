@@ -26,3 +26,16 @@ namespace teleop_utils
     }
     
 }
+
+tf2::Transform eigenIsometry3dToTf2Transform(const Eigen::Isometry3d& eigen_transform) {
+    // Extract rotation (as quaternion) and translation
+    Eigen::Quaterniond eigen_quat(eigen_transform.rotation());
+    Eigen::Vector3d eigen_trans = eigen_transform.translation();
+
+    // Convert to tf2 types
+    tf2::Quaternion tf2_quat(eigen_quat.x(), eigen_quat.y(), eigen_quat.z(), eigen_quat.w());
+    tf2::Vector3 tf2_trans(eigen_trans.x(), eigen_trans.y(), eigen_trans.z());
+
+    // Construct tf2::Transform
+    return tf2::Transform(tf2_quat, tf2_trans);
+}

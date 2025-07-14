@@ -77,15 +77,15 @@
             <group name="arm_right" />
             <group name="arm_left" />
         </group>
-        <group name="full_body">
-            <group name="torso" />
-            <group name="arm_right" />
-            <group name="arm_left" />
-            <group name="head" />
-        </group>
     </xacro:if>
     <group name="torso">
         <joint name="torso_lift_joint" />
+    </group>
+    <group name="full_body">
+        <group name="torso" />
+        <group name="arm_right" />
+        <group name="arm_left" />
+        <group name="head" />
     </group>
     <xacro:macro name="end_effector_for_side" params="side end_effector">
         <xacro:include filename="$(find pal_sea_arm_moveit_config)/config/srdf/end_effectors/${end_effector}.srdf.xacro" />
@@ -119,4 +119,23 @@
     </xacro:unless>
 
     <xacro:include filename="$(find tiago_pro_moveit_config)/config/srdf/disable_collisions/${robot}_${config_left}_${config_right}.srdf.xacro" />
+    
+    <disable_collisions link1="arm_right_7_link" link2="wrist_right_ft_sensor_base_link" reason="Always"/>
+    <disable_collisions link1="arm_left_7_link" link2="wrist_left_ft_sensor_base_link" reason="Always"/>
+
+    <disable_collisions link1="wrist_right_ft_sensor_base_link" link2="wrist_right_ft_tool_link" reason="Always"/>
+    <disable_collisions link1="wrist_left_ft_sensor_base_link" link2="wrist_left_ft_tool_link" reason="Always"/>
+    
+    <disable_collisions link1="torso_lift_link" link2="head_2_link" reason="Always"/>
+
+    <disable_collisions link1="wrist_right_ft_sensor_link" link2="gripper_right_base_link" reason="Always"/>
+    <disable_collisions link1="wrist_left_ft_sensor_link" link2="gripper_left_base_link" reason="Always"/>
+
+    <disable_collisions link1="wrist_right_ft_sensor_base_link" link2="wrist_right_ft_sensor_link" reason="Always"/>
+    <disable_collisions link1="wrist_left_ft_sensor_base_link" link2="wrist_left_ft_sensor_link" reason="Always"/>
+
+    <disable_collisions link1="wrist_right_ft_sensor_base_link" link2="gripper_right_base_link" reason="Always"/>
+    <disable_collisions link1="wrist_left_ft_sensor_base_link" link2="gripper_left_base_link" reason="Always"/>
+
+
 </robot>

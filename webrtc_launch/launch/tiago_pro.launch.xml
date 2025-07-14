@@ -1,21 +1,21 @@
 <launch>
 
 
-    <!-- <arg name="server_url" default="http://adamsanderson.net:6789"/> -->
-    <arg name="server_url" default="http://192.168.2.113:6789"/>
+    <arg name="server_url" default="http://adamsanderson.net:6789"/>
+    <!-- <arg name="server_url" default="http://192.168.2.113:6789"/> -->
 
     <!-- Audio Video Topics -->
-    <arg name="input_camera_topic" default="/head_front_camera/color/image_raw"/>
-    <arg name="output_webrtc_image_topic" default="webrtc_image"/>
-    <arg name="input_audio_topic" default="audio_in"/>
-    <arg name="output_audio_mixed_topic" default="audio_mixed"/>
-    <arg name="output_webrtc_audio_topic" default="webrtc_audio"/>
+    <arg name="input_camera_topic" default="/head_front_camera/color/image_raw/compressed"/>
+    <arg name="output_webrtc_image_topic" default="/webrtc_image"/>
+    <arg name="input_audio_topic" default="/audio_in"/>
+    <arg name="output_audio_mixed_topic" default="/audio_mixed"/>
+    <arg name="output_webrtc_audio_topic" default="/webrtc_audio"/>
 
     <!-- Data Topics -->
     <arg name="input_topic" default="webrtc_data_outgoing"/>
     <arg name="output_topic" default="webrtc_data_incoming"/>
     
-    <node name="topic_streamer" pkg="opentera_webrtc_ros" exec="topic_streamer" respawn="false">
+    <node name="topic_streamer" pkg="opentera_webrtc_ros" exec="topic_streamer" respawn="true">
         <param name="is_stand_alone" value="true" />     
         <param name="video_queue_size" value="5"/>
         <param name="audio_queue_size" value="5"/> 
@@ -51,7 +51,7 @@
             <param name="verify_ssl" value="false"/>
         </param>
 
-        <remap from="ros_image" to="$(var input_camera_topic)"/>
+        <remap from="ros_image/compressed" to="$(var input_camera_topic)"/>
         <remap from="webrtc_image" to="$(var output_webrtc_image_topic)"/>
         <remap from="audio_in" to="$(var input_audio_topic)"/>
         <remap from="audio_mixed" to="$(var output_audio_mixed_topic)"/>
@@ -59,7 +59,7 @@
     </node>
 
 
-    <node name="data_channel_bridge" pkg="opentera_webrtc_ros" exec="data_channel_bridge" respawn="false">
+    <node name="data_channel_bridge" pkg="opentera_webrtc_ros" exec="data_channel_bridge" respawn="true">
         <param name="is_stand_alone" value="true" />        
         <param name="signaling">
             <param name="server_url" value="$(var server_url)" />  
@@ -97,7 +97,7 @@
     
     </node> -->
 
-    <node name="opentera_audio_relay_node" pkg="webrtc_launch" exec="opentera_audio_relay_node" respawn="false">
+    <node name="opentera_audio_relay_node" pkg="webrtc_launch" exec="opentera_audio_relay_node" respawn="true">
         <param name="sub_top" value="$(var output_webrtc_audio_topic)" />        
         <param name="pub_top" value="output_audio_frame" />        
     </node>
@@ -116,7 +116,7 @@
 
     <node name="cmd_vel_relay" exec="relay" pkg="topic_tools" args="/cmd_vel /movo/cmd_vel" />
 
-    <node name="opentera_video_relay_node" pkg="webrtc_launch" exec="opentera_video_relay_node" respawn="false">
+    <node name="opentera_video_relay_node" pkg="webrtc_launch" exec="opentera_video_relay_node" respawn="true">
         <param name="sub_top" value="$(var output_webrtc_image_topic)" />        
         <param name="pub_top" value="output_video_frame" />  
     </node>

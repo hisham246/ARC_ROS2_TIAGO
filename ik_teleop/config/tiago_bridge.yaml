@@ -33,7 +33,7 @@ teleop_bridge:
       yaw: 0.0
 
     left_world_trans: 
-      x: 0.0
+      x: 0.5
       y: 0.0
       z: 0.0
       roll: 0.0
@@ -41,7 +41,7 @@ teleop_bridge:
       yaw: 0.0
 
     right_world_trans: 
-      x: 0.0
+      x: 0.5
       y: 0.0
       z: 0.0
       roll: 0.0

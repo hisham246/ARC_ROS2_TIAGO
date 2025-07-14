@@ -46,6 +46,26 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load max speed");
     default_max_speed = Node_->get_parameter("default_max_speed").as_double();
     
+    std::vector<std::string> pose_goals;
+    try
+    {
+        pose_goals = Node_->get_parameter("pose_goals").as_string_array();
+    }
+    catch (...)
+    {
+
+    }
+    std::vector<std::string> joint_goals;
+    
+    try
+    {
+        joint_goals = Node_->get_parameter("joint_goals").as_string_array();
+    }
+    catch (...)
+    {
+        
+    }
+
     planning_scene_monitor_ = std::make_shared<planning_scene_monitor::PlanningSceneMonitor>(Node_, robot_model_loader_, "planning_scene_monitor");
     if (!planning_scene_monitor_->getPlanningScene())
     {
@@ -134,8 +154,18 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
         }
 
         current_state_->copyJointGroupPositions(group_name, current_position);
+        bool passive_group = Node_->get_parameter(group_name+".passive_group").as_bool();
+        bio_groups_.push_back(new BIO_IK_Group(*this, group_name, joint_names, current_position, root_link_, hz, max_speeds, passive_group));
+    }
 
-        bio_groups_.push_back(new BIO_IK_Group(*this, group_name, joint_names, current_position, root_link_, hz, max_speeds));
+    for (const std::string& name : pose_goals)
+    {
+        bio_pose_goal_.push_back(new BIO_IK_Pose_Goal(*this, name, root_link_, false));
+    }
+
+    for (const std::string& name : pose_goals)
+    {
+        bio_joint_goals_.push_back(new BIO_IK_Joint_Goal(*this, name));
     }
     
     demo_ik_state_pub_ = Node_->create_publisher<moveit_msgs::msg::RobotState>("display_ik_robot_state", 1);
@@ -145,36 +175,36 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
 
 }
 
-bool BIO_IK_Planner::ready()
-{
-    for (auto& group : bio_groups_)
-    {
-        if (!group->ready())
-        {
-            auto& clock = *(Node_->get_clock());
-            RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), clock, 5.0, group->group_name_ + std::string(" Not Ready Yet"));
-            return false;
-        }
-    }
-    return true;
-}
-
 bool BIO_IK_Planner::plan()
 {
-    if (!ready())
-        return false;
-    //current_state_ = planning_scene_monitor_->getStateMonitor()->getCurrentState();
+    current_state_ = planning_scene_monitor_->getStateMonitor()->getCurrentState();
 
-    bool new_message=true;
+    bool new_message=false;
     for (auto& group : bio_groups_)
     {
-        new_message&=group->new_message();
-        if (!new_message)
+        new_message=group->new_message();
+        if (new_message)
         {
             break;
         }
     }
-
+    for (auto& group : bio_pose_goal_)
+    {
+        if (new_message)
+        {
+            break;
+        }
+        new_message=group->new_message();
+    }
+    for (auto& group : bio_joint_goal_)
+    {
+        if (new_message)
+        {
+            break;
+        }
+        new_message=group->new_message();
+    }
+    
     if (new_message)
     {
 
@@ -201,15 +231,17 @@ bool BIO_IK_Planner::plan()
         for (auto& group : bio_groups_)
         {
             group->add_goals(query.goals);
-            if (!group->is_passive())
-            {
-                // poses.push_back(group->get_goal());
-                // goal_tips.push_back(group->goal_link_);
-            }
         }
-        
+        for (auto& group : bio_pose_goal_)
+        {
+            group->add_goals(query.goals);
+        }
+        for (auto& group : bio_joint_goals_)
+        {
+            group->add_goals(query.goals);
+        }
 
-        moveit::core::RobotState solution_state(*current_state_);
+        moveit::core::RobotState solution_state(*goal_state_);
         
         bool found_ik = solution_state.setFromIK(solution_state.getJointModelGroup(main_group_),
                                                 poses,
@@ -247,7 +279,7 @@ bool BIO_IK_Planner::plan()
         {
 
             valid_goal_ = true;
-            *goal_state_ = solution_state;
+            // *goal_state_ = solution_state;
             for (auto& group : bio_groups_)
             {
                 group->filter_state(solution_state, goal_state_);
@@ -258,6 +290,7 @@ bool BIO_IK_Planner::plan()
 
     if (valid_goal_)
     {
+
         planning_scene_monitor::LockedPlanningSceneRO scene_ro(planning_scene_monitor_);
         moveit::core::RobotState interp_state(*current_state_);
         
@@ -275,6 +308,7 @@ bool BIO_IK_Planner::plan()
 
             interp_state.setJointGroupPositions(group->group_name_, interp_joint_state);
         }
+
 
         if (scene_ro->isStateColliding(interp_state, main_group_))
         {
@@ -302,6 +336,7 @@ bool BIO_IK_Planner::plan()
         moveit::core::robotStateToRobotStateMsg(*current_state_, display_state);
 
         demo_state_pub_->publish(display_state);
+        
         return true;
     }
     else
@@ -313,8 +348,6 @@ bool BIO_IK_Planner::plan()
     
 void BIO_IK_Planner::publish()
 {
-    if (!ready())
-        return;
     for (auto& group : bio_groups_)
     {
         group->publish_trajectory();
@@ -333,32 +366,30 @@ bool BIO_IK_Planner::Collision_Callback(moveit::core::RobotState* robot_state, c
 }
 
 
-BIO_IK_Planner::BIO_IK_Group::BIO_IK_Group(BIO_IK_Planner& parent, std::string group_name,
-    std::vector<std::string> joint_names, std::vector<double> current_position, std::string base_link, double hz, std::vector<double> joint_max_speed)
+BIO_IK_Planner::BIO_IK_Pose_Goal::BIO_IK_Pose_Goal(BIO_IK_Planner& parent, std::string name, std::string base_link, bool passive)
 : 
 parent_(parent),
-group_name_(group_name),
 base_link_(base_link),
-max_speeds_(joint_max_speed),
-joint_names_(joint_names),
-freq_(hz)
+passive_(passive)
 {
-    std::string sub_topic, pub_topic;
     RCLCPP_WARN_STREAM(parent_.Node_->get_logger(), "Load group params");
-    passive_group_ = parent.Node_->get_parameter(group_name_+".passive_group").as_bool();
 
-    if (!passive_group_)
+    if (!passive_)
     {
-        position_weight_ = parent.Node_->get_parameter(group_name_+".position_weight").as_double();
-        
-        orientation_weight_ = parent.Node_->get_parameter(group_name_+".orient_weight").as_double();
-        
-        pose_weight_ = parent.Node_->get_parameter(group_name_+".pose_weight").as_double();
-        
-        z_weight_ = parent.Node_->get_parameter(group_name_+".z_weight").as_double();
+        std::string sub_topic;
 
-        goal_link_ = parent.Node_->get_parameter(group_name_+".goal_link").as_string();
+        position_weight_ = parent.Node_->get_parameter(name+".position_weight").as_double();
         
+        orientation_weight_ = parent.Node_->get_parameter(name+".orient_weight").as_double();
+        
+        pose_weight_ = parent.Node_->get_parameter(name+".pose_weight").as_double();
+        
+        z_weight_ = parent.Node_->get_parameter(name+".z_weight").as_double();
+
+        goal_link_ = parent.Node_->get_parameter(name+".goal_link").as_string();
+        
+        goal_pose_ = eigenIsometry3dToTf2Transform(parent.current_state_->getFrameTransform(goal_link_));
+
         auto const* link_model = parent.robot_model->getLinkModel(goal_link_);
         if (!link_model)
         {
@@ -366,12 +397,91 @@ freq_(hz)
             exit(-1);
         }
 
-        sub_topic = parent.Node_->get_parameter(group_name_+".sub_topic").as_string();
+        sub_topic = parent.Node_->get_parameter(name+".sub_topic").as_string();
 
         sub_ = parent.Node_->create_subscription<geometry_msgs::msg::PoseStamped>(sub_topic, 1,
             std::bind(&BIO_IK_Group::commandCallback, this, std::placeholders::_1));
     }
     
+}
+
+void BIO_IK_Planner::BIO_IK_Pose_Goal::add_goals(std::vector<std::unique_ptr<bio_ik::Goal>>& goal_list)
+{   
+
+    if (passive_)
+        return;
+
+    std::scoped_lock lock(group_mutex_);
+
+    if (pose_weight_)
+        goal_list.emplace_back(new bio_ik::PoseGoal(goal_link_, goal_pose_.getOrigin(), goal_pose_.getRotation(), pose_weight_));
+    if (position_weight_)
+        goal_list.emplace_back(new bio_ik::PositionGoal(goal_link_, goal_pose_.getOrigin(), position_weight_));
+    if (orientation_weight_)
+        goal_list.emplace_back(new bio_ik::OrientationGoal(goal_link_, goal_pose_.getRotation(), orientation_weight_));
+    if (z_weight_)
+        goal_list.emplace_back(new PositionZGoal(goal_link_, goal_pose_.getOrigin(), z_weight_));
+    
+    new_message_ = false;
+
+}
+
+Eigen::Isometry3d BIO_IK_Planner::BIO_IK_Pose_Goal::get_goal()
+{
+    Eigen::Isometry3d pose;
+    if (passive_)
+        return pose;
+
+    std::scoped_lock lock(group_mutex_);
+    pose = tf2::transformToEigen(tf2::toMsg(goal_pose_));
+    return pose;
+}
+
+
+bool BIO_IK_Planner::BIO_IK_Pose_Goal::is_passive()
+{
+    return passive_;
+}
+
+void BIO_IK_Planner::BIO_IK_Pose_Goal::commandCallback(const geometry_msgs::msg::PoseStamped& cmd)
+{
+    std::scoped_lock lock(group_mutex_);
+    
+    try
+    {
+        tf2::convert(parent_.tf_buffer->transform(cmd, base_link_, tf2::durationFromSec(0.1)).pose, goal_pose_);
+        initialized_ = true;
+        new_message_ = true;
+    }
+    catch (tf2::TransformException &ex)
+    {
+        RCLCPP_WARN_STREAM(parent_.Node_->get_logger(), "Could NOT transform: " << ex.what());
+    }
+
+}
+
+bool BIO_IK_Planner::BIO_IK_Pose_Goal::new_message()
+{
+    return new_message_ || passive_;
+}
+
+void BIO_IK_Planner::BIO_IK_Pose_Goal::message_used()
+{
+    new_message_ = false;
+}
+
+BIO_IK_Planner::BIO_IK_Group::BIO_IK_Group(BIO_IK_Planner& parent, std::string group_name,
+    std::vector<std::string> joint_names, std::vector<double> current_position, std::string base_link,
+    double hz, std::vector<double> joint_max_speed, bool passive)
+: 
+BIO_IK_Planner::BIO_IK_Pose_Goal(parent, group_name, base_link, passive),
+freq_(hz),
+group_name_(group_name),
+max_speeds_(joint_max_speed),
+joint_names_(joint_names)
+{
+    std::string sub_topic, pub_topic;
+        
     pub_topic = parent.Node_->get_parameter(group_name_+".pub_topic").as_string();
 
     pub_ = parent.Node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(pub_topic, 1);
@@ -383,39 +493,37 @@ freq_(hz)
     traj_.points.push_back(temp_point);
 }
 
-void BIO_IK_Planner::BIO_IK_Group::add_goals(std::vector<std::unique_ptr<bio_ik::Goal>>& goal_list)
+std::vector<double> BIO_IK_Planner::BIO_IK_Group::interpolate_motion(std::vector<double> start, std::vector<double> end)
 {
-    if (passive_group_)
-        return;
-    
-    group_mutex_.lock();
+    double scaling = 1.0;
+    for (int i = 0; i < end.size(); ++i)
+    {
+        if (max_speeds_[i] <= 0.01)
+            continue;
 
-    if (pose_weight_)
-        goal_list.emplace_back(new bio_ik::PoseGoal(goal_link_, goal_pose_.getOrigin(), goal_pose_.getRotation(), pose_weight_));
-    if (position_weight_)
-        goal_list.emplace_back(new bio_ik::PositionGoal(goal_link_, goal_pose_.getOrigin(), position_weight_));
-    if (orientation_weight_)
-        goal_list.emplace_back(new bio_ik::OrientationGoal(goal_link_, goal_pose_.getRotation(), orientation_weight_));
-    if (z_weight_)
-        goal_list.emplace_back(new PositionZGoal(goal_link_, goal_pose_.getOrigin(), z_weight_));
-    
-    group_mutex_.unlock();
-}
+        double temp_scale = std::abs(start[i] - end[i]) * freq_ / std::abs(max_speeds_[i]);
 
-Eigen::Isometry3d BIO_IK_Planner::BIO_IK_Group::get_goal()
-{
-    Eigen::Isometry3d pose;
-    if (passive_group_)
-        return pose;
-    
-    std::scoped_lock(group_mutex_);
-    pose = tf2::transformToEigen(tf2::toMsg(goal_pose_));
-    return pose;
-}
+        if (temp_scale > scaling && !isinf(temp_scale))
+        {
+            scaling = temp_scale;
+        }
+    }
 
-bool BIO_IK_Planner::BIO_IK_Group::is_passive()
-{
-    return passive_group_;
+    // RCLCPP_WARN_STREAM(parent_.Node_->get_logger(), "Scaling for group: " << group_name_ << " is " << scaling);
+    
+
+    std::vector<double> interp;
+
+    if (scaling > 1.0)
+    {
+        for (int j = 0; j < start.size(); ++j)
+        {
+            interp.push_back(start[j] + ((end[j] - start[j])/scaling));
+        }
+        return interp;
+    }
+
+    return end;
 }
 
 
@@ -425,7 +533,7 @@ void BIO_IK_Planner::BIO_IK_Group::filter_state(moveit::core::RobotState &new_st
     new_state.copyJointGroupPositions(group_name_, new_angles);
     old_state->copyJointGroupPositions(group_name_, old_angles);
 
-    if (passive_group_)
+    if (passive_)
     {
         old_state->setJointGroupActivePositions(group_name_, new_angles);
         return;
@@ -470,71 +578,53 @@ void BIO_IK_Planner::BIO_IK_Group::publish_trajectory()
     pub_->publish(traj_);
 }
 
-bool BIO_IK_Planner::BIO_IK_Group::ready()
+BIO_IK_Planner::BIO_IK_Joint_Goal::BIO_IK_Joint_Goal(BIO_IK_Planner& parent, std::string name) : 
+parent_(parent)
 {
-    return passive_group_ || initialized_;
+    std::string sub_topic;
+
+    sub_topic = parent.Node_->get_parameter(name+".sub_topic").as_string();
+    default_weight_ = parent.Node_->get_parameter(name+".default_weight").as_double();
+
+    goal_ = sensor_msgs::msg::JointState();
+
+    sub_ = parent.Node_->create_subscription<sensor_msgs::msg::JointState>(sub_topic, 1,
+        std::bind(&BIO_IK_Joint_Goal::commandCallback, this, std::placeholders::_1));
 }
 
-void BIO_IK_Planner::BIO_IK_Group::commandCallback(const geometry_msgs::msg::PoseStamped& cmd)
+void BIO_IK_Planner::BIO_IK_Joint_Goal::add_goals(std::vector<std::unique_ptr<bio_ik::Goal>>& goal_list)
 {
-    std::scoped_lock(group_mutex_);
-    
-    try
+    std::scoped_lock lock(group_mutex_);
+
+    for (int i = 0; i < std::min(goal_.name.size(), goal_.position.size()); i++ )
     {
-        // RCLCPP_WARN_STREAM(parent_.Node_->get_logger(), group_name_ << ": " << (double)temp.pose.position.x << " " << 
-        //     (double)temp.pose.position.y << " " << (double)temp.pose.position.z);
-        tf2::convert(parent_.tf_buffer->transform(cmd, base_link_, tf2::durationFromSec(0.1)).pose, goal_pose_);
-        // RCLCPP_WARN_STREAM(parent_.Node_->get_logger(), group_name_ << ": " << (double)goal_pose_.translation().x() << " " << 
-        //     (double)goal_pose_.translation().y() << " " << (double)goal_pose_.translation().z());
-        initialized_ = true;
-        new_message_ = true;
-    }
-    catch (tf2::TransformException &ex)
-    {
-        RCLCPP_WARN_STREAM(parent_.Node_->get_logger(), "Could NOT transform: " << ex.what());
-    }
-
-}
-
-std::vector<double> BIO_IK_Planner::BIO_IK_Group::interpolate_motion(std::vector<double> start, std::vector<double> end)
-{
-    double scaling = 1.0;
-    for (int i = 0; i < end.size(); ++i)
-    {
-        if (max_speeds_[i] <= 0.01)
-            continue;
-
-        double temp_scale = std::abs(start[i] - end[i]) * freq_ / std::abs(max_speeds_[i]);
-
-        if (temp_scale > scaling && !isinf(temp_scale))
+        if (i < goal_.effort.size())
         {
-            scaling = temp_scale;
+            goal_list.emplace_back(new bio_ik::JointVariableGoal(goal_.name[i], goal_.position[i], goal_.effort[i]));
+        }
+        else
+        {
+            goal_list.emplace_back(new bio_ik::JointVariableGoal(goal_.name[i], goal_.position[i], default_weight_));
         }
     }
 
-    // RCLCPP_WARN_STREAM(parent_.Node_->get_logger(), "Scaling for group: " << group_name_ << " is " << scaling);
-    
+    new_message_ = false;
 
-    std::vector<double> interp;
-
-    if (scaling > 1.0)
-    {
-        for (int j = 0; j < start.size(); ++j)
-        {
-            interp.push_back(start[j] + ((end[j] - start[j])/scaling));
-        }
-        return interp;
-    }
-
-    return end;
 }
 
-bool BIO_IK_Planner::BIO_IK_Group::new_message()
+void BIO_IK_Planner::BIO_IK_Joint_Goal::commandCallback(const sensor_msgs::msg::JointState& cmd)
 {
-    return new_message_ || passive_group_;
+    std::scoped_lock lock(group_mutex_);
+    goal_ = cmd;
+
 }
 
-void BIO_IK_Planner::BIO_IK_Group::message_used()
+bool BIO_IK_Planner::BIO_IK_Joint_Goal::new_message()
+{
+    return new_message_;
+}
+
+void BIO_IK_Planner::BIO_IK_Joint_Goal::message_used()
 {
     new_message_ = false;
 }

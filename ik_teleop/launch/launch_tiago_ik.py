@@ -126,7 +126,7 @@ def start_move_group(context, *args, **kwargs):
     move_group_configuration = {
         'use_sim_time': LaunchConfiguration('use_sim_time'),
         'publish_robot_description_semantic': True,
-        'robot_description_timeout': 60.0,
+        'robot_description_timeout': 120.0,
     }
 
     move_group_params = [
@@ -135,13 +135,13 @@ def start_move_group(context, *args, **kwargs):
     ]
 
     # Start the actual move_group node/action server
-    run_move_group_node = Node(
-        package='moveit_ros_move_group',
-        executable='move_group',
-        output='screen',
-        emulate_tty=True,
-        parameters=move_group_params,
-    )
+    # run_move_group_node = Node(
+    #     package='moveit_ros_move_group',
+    #     executable='move_group',
+    #     output='screen',
+    #     emulate_tty=True,
+    #     parameters=move_group_params,
+    # )
 
     config_control_node = os.path.join(
         get_package_share_directory('ik_teleop'),
@@ -198,7 +198,12 @@ def start_move_group(context, *args, **kwargs):
                 'launch/tiago_gripper_passthrough.launch.xml'))
     )
 
-    return [run_move_group_node, control_node, bridge_node, rviz_node, launch_include]
+    return [
+        # run_move_group_node,
+        control_node,
+        bridge_node,
+        rviz_node,
+        launch_include]
 
 
 def generate_launch_description():

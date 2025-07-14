@@ -2,7 +2,7 @@
 sudo apt install -y unzip rsync ros-dev-tools librange-v3-dev 
 
 # opentera-webrtc-ros packages
-sudo apt install -y ros-humble-camera-info-manager ros-humble-rtabmap-ros ros-humble-rqt-tf-tree ros-humble-turtlebot3-gazebo ros-humble-turtlebot3-description ros-humble-turtlebot3-navigation2 ros-humble-joint-state-publisher-gui ros-humble-moveit-servo ros-humble-moveit-ros-planning-interface
+sudo apt install -y ros-humble-camera-info-manager ros-humble-rtabmap-ros ros-humble-rqt-tf-tree ros-humble-turtlebot3-gazebo ros-humble-turtlebot3-description ros-humble-turtlebot3-navigation2 ros-humble-joint-state-publisher-gui ros-humble-moveit-servo ros-humble-moveit-ros-planning-interface ros-humble-rclpy-message-converter
 
 # protobuf
 sudo apt install -y libprotobuf-dev protobuf-compiler python3-protobuf
@@ -33,7 +33,11 @@ sudo apt-get install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev lib
 
 sudo apt-get install -y librange-v3-dev
 
+sudo apt install -y omniorb omniorb-nameserver libomniorb4-dev omniidl omniorb-idl
+
 # clone this repo with --recursive submodules
+
+sudo python3 -m install omniorb-py
 
 sudo python3 -m pip install torchvision
 
