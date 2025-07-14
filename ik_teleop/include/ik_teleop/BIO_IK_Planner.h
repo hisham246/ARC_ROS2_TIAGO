@@ -141,7 +141,7 @@ protected:
     std::vector<std::string> groups_, min_displacement_joints_;
 
     std::vector<BIO_IK_Group*> bio_groups_;
-    std::vector<BIO_IK_Pose_Goal*> bio_pose_goal_;
+    std::vector<BIO_IK_Pose_Goal*> bio_pose_goals_;
     std::vector<BIO_IK_Joint_Goal*> bio_joint_goals_;
 
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_;

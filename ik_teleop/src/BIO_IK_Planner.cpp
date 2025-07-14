@@ -160,7 +160,7 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
 
     for (const std::string& name : pose_goals)
     {
-        bio_pose_goal_.push_back(new BIO_IK_Pose_Goal(*this, name, root_link_, false));
+        bio_pose_goals_.push_back(new BIO_IK_Pose_Goal(*this, name, root_link_, false));
     }
 
     for (const std::string& name : pose_goals)
@@ -188,7 +188,7 @@ bool BIO_IK_Planner::plan()
             break;
         }
     }
-    for (auto& group : bio_pose_goal_)
+    for (auto& group : bio_pose_goals_)
     {
         if (new_message)
         {
@@ -196,7 +196,7 @@ bool BIO_IK_Planner::plan()
         }
         new_message=group->new_message();
     }
-    for (auto& group : bio_joint_goal_)
+    for (auto& group : bio_joint_goals_)
     {
         if (new_message)
         {
@@ -204,7 +204,7 @@ bool BIO_IK_Planner::plan()
         }
         new_message=group->new_message();
     }
-    
+
     if (new_message)
     {
 
@@ -232,7 +232,7 @@ bool BIO_IK_Planner::plan()
         {
             group->add_goals(query.goals);
         }
-        for (auto& group : bio_pose_goal_)
+        for (auto& group : bio_pose_goals_)
         {
             group->add_goals(query.goals);
         }
