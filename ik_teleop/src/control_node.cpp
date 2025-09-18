@@ -22,8 +22,8 @@ int main(int argc, char** argv)
     {
         if (planner.plan())
         {
-            rate.sleep();
             planner.publish();
+            rate.sleep();
         }
         else
         {

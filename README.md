@@ -58,3 +58,13 @@ ros2 launch webrtc_launch tiago_pro.launch.xml
 After this you should be able to launch the unity project. The webrtc and unity systems should connect from their.
 
 Currently there is a gazebo bug that does not allow video to be transmitted. The video data is empty though the connection is made. Data does work so the robot will follow the operators motions.
+
+# Install Problems
+
+Audio Utils may have some issues with newer CPUs. Resolve this modify the file "make_openblas_unix.bash" for newer cpus...
+
+'''
+    make USE_THREAD=0 TARGET=SAPPHIRERAPIDS
+'''
+
+Appears to work

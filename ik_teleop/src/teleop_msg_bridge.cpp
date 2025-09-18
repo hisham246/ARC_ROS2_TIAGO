@@ -86,7 +86,7 @@ class bridge : public rclcpp::Node
             Head_pose_pub_->publish(Head);
 
             L_grip_pub_->publish(left_squeeze);
-            L_grip_pub_->publish(right_squeeze);
+            R_grip_pub_->publish(right_squeeze);
 
         }
 

@@ -177,7 +177,7 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
 
 bool BIO_IK_Planner::plan()
 {
-    current_state_ = planning_scene_monitor_->getStateMonitor()->getCurrentState();
+    // current_state_ = planning_scene_monitor_->getStateMonitor()->getCurrentState();
 
     bool new_message=false;
     for (auto& group : bio_groups_)

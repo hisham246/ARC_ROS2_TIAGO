@@ -82,7 +82,7 @@ class gripper_traj_interface : public rclcpp::Node
                 trajectory_msgs::msg::JointTrajectory new_traj;
                 // new_traj.joint_names = joints_;
                 new_traj.points.push_back(trajectory_msgs::msg::JointTrajectoryPoint());
-                new_traj.points[0].time_from_start = rclcpp::Duration(0, 5e8);
+                new_traj.points[0].time_from_start = rclcpp::Duration(0, 0);
                 new_traj.header.frame_id = "base_link";
                 for (int i = 0; i < joint_names_.size(); i++)
                 {

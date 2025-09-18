@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<robot name="FillieOpen"
+       xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+       <!-- <xacro:include filename="$(find nextage_fillie_open_description)/urdf/FillieOpen.urdf" /> -->
+       <xacro:include filename="$(find nextage_fillie_open_description)/urdf/nextage_fillie_open_gz_camera.xacro" />
+
+       <xacro:property name="M_PI" value="3.1415926535897931" />
+       <xacro:property name="jnt_head_camera_displacement_x" value="0.0175" />
+       <xacro:property name="jnt_head_camera_displacement_y" value="0.0725" />
+       <xacro:property name="jnt_head_camera_displacement_z" value="0.105" />
+       <xacro:property name="jnt_head_camera_rot_y" value="0.25" />
+       <xacro:property name="link_head_camera_rot_z" value="0.05" />
+
+       <!-- NOTE: The poses of headmount cameras are NOT precisely adjusted to
+              the 3D model nor the actual hardware config. These configs
+              are meant for a rapid prototyping only. If you need precise
+              configuration, please go ahead modify the following, then
+              (if possible) send a patch to https://github.com/tork-a/rtmros_nextage/pulls
+              so that other developers and users can use (and possible improve).
+       -->
+       <!-- TODO hand cameras can be added here with the very similar code as
+       headmount cameras. -->
+
+       <xacro:macro name="joint_transmission" params="name reduction offset_value">
+              <transmission name="${name}_trans">
+                     <plugin>transmission_interface/SimpleTransmission</plugin>
+                     <actuator name="${name}_actuator" role="actuator1"/>
+                     <joint name="${name}" role="joint1" >
+                            <offset>${offset_value}</offset>
+                            <mechanicalReduction>${reduction}</mechanicalReduction>
+                     </joint>
+              </transmission>
+       </xacro:macro>
+
+       <xacro:macro name="ros2_control_joint" params="name reduction offset_value" >
+              <joint name="${name}">
+                     <command_interface name="position" />
+
+                     <state_interface name="position" />
+                     <state_interface name="velocity" />
+              </joint>
+
+              <xacro:joint_transmission name="${name}" reduction="1" offset_value="${offset_value}" />
+
+       </xacro:macro>
+
+       <ros2_control name="my_robot_hw" type="system">
+              <hardware>
+                     <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+              </hardware>
+              <!-- <xacro:camera_joint_link_gzplugin
+                     camera_name="CAMERA_HEAD_L" link_parent="HEAD_JOINT1_Link"
+                     jnt_displacement_x="${jnt_head_camera_displacement_x}" jnt_displacement_y="${jnt_head_camera_displacement_y}" jnt_displacement_z="${jnt_head_camera_displacement_z}"
+                     jnt_rotation_x="0.0" jnt_rotation_y="${jnt_head_camera_rot_y}" jnt_rotation_z="0.0"
+                     link_displacement_x="0.0325" link_displacement_y="0.0" link_displacement_z="0.0"
+                     link_rotation_x="0.0" link_rotation_y="${M_PI/2}" link_rotation_z="-${link_head_camera_rot_z}" />
+
+              <xacro:camera_joint_link_gzplugin
+                     camera_name="CAMERA_HEAD_R" link_parent="HEAD_JOINT1_Link"
+                     jnt_displacement_x="${jnt_head_camera_displacement_x}" jnt_displacement_y="-${jnt_head_camera_displacement_y}" jnt_displacement_z="${jnt_head_camera_displacement_z}"
+                     jnt_rotation_x="0.0" jnt_rotation_y="${jnt_head_camera_rot_y}" jnt_rotation_z="0.0"
+                     link_displacement_x="0.0325" link_displacement_y="0.0" link_displacement_z="0.0"
+                     link_rotation_x="0.0" link_rotation_y="${M_PI/2}" link_rotation_z="${link_head_camera_rot_z}" /> -->
+
+              
+
+              <xacro:macro name="ros2_control_joints">
+                     <!-- arm left -->
+                     <xacro:ros2_control_joint name="LARM_JOINT0" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="LARM_JOINT1" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="LARM_JOINT2" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="LARM_JOINT3" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="LARM_JOINT4" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="LARM_JOINT5" reduction="1.0" offset_value="0.0" />
+                     
+
+
+                     <!-- arm right -->
+                     <xacro:ros2_control_joint name="RARM_JOINT0" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="RARM_JOINT1" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="RARM_JOINT2" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="RARM_JOINT3" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="RARM_JOINT4" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="RARM_JOINT5" reduction="1.0" offset_value="0.0" />
+
+                     <!-- head -->
+                     <xacro:ros2_control_joint name="HEAD_JOINT0" reduction="1.0" offset_value="0.0" />
+                     <xacro:ros2_control_joint name="HEAD_JOINT1" reduction="1.0" offset_value="0.0" />
+
+                     <!-- torso -->
+                     <xacro:ros2_control_joint name="CHEST_JOINT0" reduction="1.0" offset_value="0.0" />
+
+              </xacro:macro>
+              
+       </ros2_control>
+       <!-- Init the ROS 2 control gazebo interface -->
+       <!-- <gazebo>
+       <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+              <parameters>$(find nextage_fillie_open_gazebo)/ros2_control/gazebo_controller_manager_cfg.yaml</parameters>
+       </plugin>
+       </gazebo>
+
+       <ros2_control name="ros2_control_gazebo_system" type="system">
+              <hardware>
+              <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+              </hardware>
+
+              <xacro:ros2_control_joints/>
+       </ros2_control> -->
+       <gazebo>
+              <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+                     <parameters>$(find nextage_fillie_open_moveit_config)/config/ros2_controllers.yaml</parameters>
+              </plugin>
+       </gazebo>
+</robot>

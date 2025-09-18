@@ -10,5 +10,5 @@ gripper_traj_node_right:
     gripper_right_finger_joint:
       joint_name: "gripper_right_finger_joint"
       open_angle: 0.0
-      closed_angle: 0.802850778
+      closed_angle: 0.95
       max_speed: 2.0

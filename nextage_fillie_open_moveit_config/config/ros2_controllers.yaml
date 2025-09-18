@@ -24,6 +24,7 @@ controller_manager:
 
 right_arm_controller:
   ros__parameters:
+    type: joint_trajectory_controller/JointTrajectoryController
     joints:
       - RARM_JOINT0
       - RARM_JOINT1
@@ -32,11 +33,13 @@ right_arm_controller:
       - RARM_JOINT4
       - RARM_JOINT5
     command_interfaces:
-      [position]
+      - position
     state_interfaces:
-      [position, velocity]
+      - position
+      - velocity
 left_arm_controller:
   ros__parameters:
+    type: joint_trajectory_controller/JointTrajectoryController
     joints:
       - LARM_JOINT0
       - LARM_JOINT1
@@ -45,22 +48,28 @@ left_arm_controller:
       - LARM_JOINT4
       - LARM_JOINT5
     command_interfaces:
-      [position]
+      - position
     state_interfaces:
-      [position, velocity]
+      - position
+      - velocity
 torso_controller:
   ros__parameters:
-    joint: CHEST_JOINT0
+    type: joint_trajectory_controller/JointTrajectoryController
+    joints:
+     - CHEST_JOINT0
     command_interfaces:
-      [position]
+      - position
     state_interfaces:
-      [position, velocity]
+      - position
+      - velocity
 head_controller:
   ros__parameters:
+    type: joint_trajectory_controller/JointTrajectoryController
     joints:
       - HEAD_JOINT0
       - HEAD_JOINT1
     command_interfaces:
-      [position]
+      - position
     state_interfaces:
-      [position, velocity]
+      - position
+      - velocity
