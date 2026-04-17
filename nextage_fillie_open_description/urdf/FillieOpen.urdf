@@ -43,7 +43,7 @@
 	</joint>
 
 	<xacro:include filename="$(find nextage_fillie_open_description)/urdf/materials.urdf.xacro" />
-	<!-- <xacro:include filename="$(find nextage_fillie_open_description)/urdf/nextage_fillie_open_gz.xacro" /> -->
+	<xacro:include filename="$(find nextage_fillie_open_description)/urdf/nextage_fillie_open_gz.xacro" />
 
 	<!-- <xacro:gazebo_nx_link name="WAIST" color="Black" /> -->
 	<link name="WAIST">

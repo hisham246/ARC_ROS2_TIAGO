@@ -17,7 +17,7 @@ sudo apt install -y nodejs npm
 sudo apt install -y cmake build-essential gfortran texinfo libasound2-dev libpulse-dev 'libgfortran-*-dev'
 
 # odas_ros packages
-sudo apt install -y libfftw3-dev libconfig-dev
+sudo apt install -y libfftw3-dev libconfig-dev lib
 
 # gstreamer for hardware acceleration
 sudo apt install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools

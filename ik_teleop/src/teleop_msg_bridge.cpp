@@ -70,6 +70,14 @@ class bridge : public rclcpp::Node
             Right.header.stamp = time;
             Head.header.stamp = time;
             
+            if (((fabs(message->left_controller_pose.position.x) + fabs(message->left_controller_pose.position.y)+fabs(message->left_controller_pose.position.z)) < 0.001) || 
+                ((fabs(message->right_controller_pose.position.x) + fabs(message->right_controller_pose.position.y)+fabs(message->right_controller_pose.position.z)) < 0.001) || 
+                ((fabs(message->hmd_pose.position.x) + fabs(message->hmd_pose.position.y)+fabs(message->hmd_pose.position.z)) < 0.001))
+                {
+                    // RCLCPP_WARN_STREAM(this->get_logger(), "Empty Message!");
+                    return;
+                }
+
             transform_pose(message->left_controller_pose, Left.pose, world_left_trans_, tool_left_trans_);
             transform_pose(message->right_controller_pose, Right.pose, world_right_trans_, tool_right_trans_);
             transform_pose(message->hmd_pose, Head.pose, world_head_trans_, tool_head_trans_);
