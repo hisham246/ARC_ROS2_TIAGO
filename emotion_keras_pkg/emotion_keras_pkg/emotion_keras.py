@@ -134,8 +134,8 @@ class Emotion_Recognizer(Node):
 
 
 
-        weights_path = "/home/adam/colcon_ws/colcon_ws/src/emotion_keras_pkg/networks/LSTM_Run21.keras"
-        # weights_path = "/home/adam/colcon_ws/colcon_ws/src/emotion_keras_pkg/networks/Conv_Run21.keras"
+        weights_path = "/colcon_ws/colcon_ws/src/emotion_keras_pkg/networks/LSTM_Run21.keras"
+        # weights_path = "/colcon_ws/colcon_ws/src/emotion_keras_pkg/networks/Conv_Run21.keras"
         print(weights_path)
         model_type = 0 #0 for conv window, 1 for lstm
         load_model = True
