@@ -5,8 +5,6 @@ import numpy as np
 import multiprocessing as mp
 import tf_keras
 import tensorflow as tf
-import emotion_keras_pkg.Custom_Accuracy as Custom_Accuracy
-import emotion_keras_pkg.Custom_Loss as Custom_Loss
 import time
 
 timesteps=30
@@ -17,93 +15,9 @@ num_classes_2 = 3
 intens_list = ["LOW", "MED", "HI"]
 emo_list = ["ANGER", "DISGUST", "FEAR", "HAPPY", "NEUTRAL", "SAD"]
 
-def keras_process(weights_path, model_type, load_model, stop_flag, ready_flag, keras_input_q, keras_output_q):
+def keras_process(weights_path, stop_flag, ready_flag, keras_input_q, keras_output_q):
     
-    model = None
-    if load_model:
-        model = tf_keras.models.load_model(weights_path, compile=False,
-                                        custom_objects={'CustomMaskedCategoricalCrossentropy': Custom_Loss.CustomMaskedCategoricalCrossentropy,
-                                                        'CustomAccuracy': Custom_Accuracy.CustomAccuracy})
-    else:
-        # Define the input layer
-        input_sequence = tf_keras.layers.Input(shape=(timesteps, features)) # timesteps: length of sequence, features: number of features per timestep
-
-        output_classification_1 = None
-        output_classification_2 = None
-
-        
-        if model_type==0:
-            input_reshape = tf.expand_dims(input_sequence, axis=-1)
-            L1 = tf_keras.layers.Conv2D(16, (7, 7), activation='relu', padding='same')(input_reshape)
-            Layer = tf_keras.layers.Conv2D(16, (7, 7), activation='relu', padding='same')(L1)
-            Layer = tf_keras.layers.Conv2D(16, (7, 7), activation='relu', padding='same')(Layer)
-            Layer = tf_keras.layers.Conv2D(16, (3, 3), activation='relu', padding='same')(Layer)
-            Layer = tf_keras.layers.Conv2D(16, (3, 3), activation='relu')(Layer)
-            Layer = tf_keras.layers.Conv2D(16, (3, 3), activation='relu')(Layer)
-            Layer = tf_keras.layers.Flatten()(Layer)
-
-            conv_output = tf_keras.layers.Dense(units=128, activation='relu')(Layer)
-
-            # Define the first classification head
-            output_classification_1 = tf_keras.layers.Dense(units=num_classes_1, activation='softmax', name='classification_1')(conv_output)
-
-            # Define the second classification head
-            output_classification_2 = tf_keras.layers.Dense(units=num_classes_2, activation='softmax', name='classification_2')(conv_output)
-
-        elif model_type==1:
-            # Define the shared LSTM layer
-            lstm_output = tf_keras.layers.LSTM(units=128)(input_sequence) # units: dimensionality of the output space
-
-            lstm_output = tf_keras.layers.Dense(units=128, activation='relu')(lstm_output)
-
-            # Define the first classification head
-            output_classification_1 = tf_keras.layers.Dense(units=num_classes_1, activation='softmax', name='classification_1')(lstm_output)
-
-            # Define the second classification head
-            output_classification_2 = tf_keras.layers.Dense(units=num_classes_2, activation='softmax', name='classification_2')(lstm_output)
-
-        elif model_type==2:
-            # num_pyr = 4
-            filter_sizes = [1, 1, 1, 1, 1, 1, 0.95, 0.9, 0.8, 0.75, 0.6, 0.5, 0.4, 0.33333, 0.25, 0.1]
-            num_filters = 32
-
-            # Define the input layer
-            input_sequence = tf_keras.Input(shape=(timesteps, features)) # timesteps: length of sequence, features: number of features per timestep
-
-            input_reshape = tf.keras.ops.expand_dims(input_sequence, axis=-1)
-
-            Layer = tf_keras.Conv2D(num_filters, (1, features), activation='relu')(input_reshape)
-
-            for scale in filter_sizes:
-                shape = (int(scale*timesteps), int(features))
-                Layer = tf_keras.Concatenate(axis=1)([Layer, tf_keras.Conv2D(num_filters, shape, activation='relu')(input_reshape)])
-
-            Layer = tf_keras.Flatten()(Layer)
-
-            Layer = tf_keras.Dense(units=512, activation='relu')(Layer)
-            Layer = tf_keras.Dense(units=256, activation='relu')(Layer)
-            Layer = tf_keras.Dense(units=128, activation='relu')(Layer)
-            Layer = tf_keras.Dense(units=128, activation='relu')(Layer)
-            conv_output = tf_keras.Dense(units=64, activation='relu')(Layer)
-
-            # Define the first classification head
-            output_classification_1 = tf_keras.Dense(units=num_classes_1, activation='softmax', name='classification_1')(conv_output)
-
-            # Define the second classification head
-            output_classification_2 = tf_keras.Dense(units=num_classes_2, activation='softmax', name='classification_2')(conv_output)
-
-        # Create model
-        model = tf_keras.Model(inputs=[input_sequence], outputs=[output_classification_1, output_classification_2])
-
-        # Load weights
-        try:
-            model.load_weights(weights_path)
-            print("Weights loaded successfully.")
-        except tf.errors.NotFoundError:
-            print("Weights file not found. Ensure 'my_model_weights.h5' exists.")
-        
-        # Compile model
-        model.compile()
+    model = tf.keras.models.load_model(weights_path, compile=False)
 
     # First run to reduce subsequent latency
     model.predict(np.zeros((1,timesteps, features),dtype=np.float64))
@@ -134,14 +48,12 @@ class Emotion_Recognizer(Node):
 
 
 
-        weights_path = "/colcon_ws/colcon_ws/src/emotion_keras_pkg/networks/LSTM_Run21.keras"
-        # weights_path = "/colcon_ws/colcon_ws/src/emotion_keras_pkg/networks/Conv_Run21.keras"
+        weights_path = "/colcon_ws/tiago_ws/src/emotion_keras_pkg/networks/LSTM_Run21.keras"
+        # weights_path = "/colcon_ws/tiago_ws/src/emotion_keras_pkg/networks/Conv_Run21.keras"
         print(weights_path)
-        model_type = 0 #0 for conv window, 1 for lstm
-        load_model = True
 
         self.keras_process = mp.Process(target=keras_process, args=(
-            weights_path, model_type, load_model,
+            weights_path,
             self.stop_flag, self.ready_flag,
             self.keras_input_q, self.keras_output_q
         ))
