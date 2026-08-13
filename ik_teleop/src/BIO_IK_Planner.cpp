@@ -16,34 +16,43 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
 
     // Load parameters
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load Frequency");
+    Node_->declare_parameter("frequency", 0.0d);
     hz = Node_->get_parameter("frequency").as_double();
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load main group");
+    Node_->declare_parameter("main_group", "group");
     main_group_ = Node_->get_parameter("main_group").as_string();
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load root link");
+    Node_->declare_parameter("root_link", "base_link");
     root_link_ = Node_->get_parameter("root_link").as_string();
 
-    std::vector<std::string> empty;
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load groups");
+    Node_->declare_parameter("groups", std::vector<std::string>());
     groups_ = Node_->get_parameter("groups").as_string_array();
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load center joint weights");
+    Node_->declare_parameter("center_joints_weight", 0.0d);
     center_weight_ = Node_->get_parameter("center_joints_weight").as_double();
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load min disp weight");
+    Node_->declare_parameter("min_displacement_weight", 0.0d);
     min_disp_weight_ = Node_->get_parameter("min_displacement_weight").as_double();
     
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load min disp joints");
+    Node_->declare_parameter("min_displacement_joints", std::vector<std::string>());
     min_displacement_joints_ = Node_->get_parameter("min_displacement_joints").as_string_array();
     
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load min disp joints weights");
+    Node_->declare_parameter("min_displacement_joints_weights", std::vector<double>());
     min_displacement_joints_weights_= Node_->get_parameter("min_displacement_joints_weights").as_double_array();
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load ik timeout");
+    Node_->declare_parameter("ik_timeout", 0.0d);
     ik_timeout_ = Node_->get_parameter("ik_timeout").as_double();
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load max speed");
+    Node_->declare_parameter("default_max_speed", 0.0d);
     default_max_speed = Node_->get_parameter("default_max_speed").as_double();
     
     std::vector<std::string> pose_goals;
@@ -144,17 +153,21 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
                 }
                 else
                 {
-                    max_speeds.push_back((*var_bounds)[0].max_velocity_);
+                    max_speeds.push_back((*var_bounds)[0].max_velocity_*0.25);
                 }
             }
             else
             {
                 max_speeds.push_back(default_max_speed);
             }
+            // max_speeds.push_back(default_max_speed);
         }
 
         current_state_->copyJointGroupPositions(group_name, current_position);
+        
+        Node_->declare_parameter(group_name+".passive_group", false);
         bool passive_group = Node_->get_parameter(group_name+".passive_group").as_bool();
+        
         bio_groups_.push_back(new BIO_IK_Group(*this, group_name, joint_names, current_position, root_link_, hz, max_speeds, passive_group));
     }
 
@@ -168,8 +181,8 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
         bio_joint_goals_.push_back(new BIO_IK_Joint_Goal(*this, name));
     }
     
-    demo_ik_state_pub_ = Node_->create_publisher<moveit_msgs::msg::RobotState>("display_ik_robot_state", 1);
-    demo_state_pub_ = Node_->create_publisher<moveit_msgs::msg::RobotState>("display_robot_state", 1);
+    demo_ik_state_pub_ = Node_->create_publisher<moveit_msgs::msg::DisplayRobotState>("display_ik_robot_state", 1);
+    demo_state_pub_ = Node_->create_publisher<moveit_msgs::msg::DisplayRobotState>("display_robot_state", 1);
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Bio IK planner ready to go!");
 
@@ -178,7 +191,11 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
 bool BIO_IK_Planner::plan()
 {
     // current_state_ = planning_scene_monitor_->getStateMonitor()->getCurrentState();
-
+    moveit::core::RobotState temp(*planning_scene_monitor_->getStateMonitor()->getCurrentState());
+    for (auto& group : bio_groups_)
+    {
+        group->update_current_state(temp, current_state_);
+    }
     bool new_message=false;
     for (auto& group : bio_groups_)
     {
@@ -207,7 +224,7 @@ bool BIO_IK_Planner::plan()
 
     if (new_message)
     {
-
+        // RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "New Message");
         bio_ik::BioIKKinematicsQueryOptions query;
         query.return_approximate_solution = true;
         query.lock_redundant_joints = false;
@@ -259,10 +276,13 @@ bool BIO_IK_Planner::plan()
         else
         {
             moveit_msgs::msg::RobotState display_state;
+            moveit_msgs::msg::DisplayRobotState disp_state;
 
             moveit::core::robotStateToRobotStateMsg(solution_state, display_state);
+            disp_state.state = display_state;
 
-            demo_ik_state_pub_->publish(display_state);
+            demo_ik_state_pub_->publish(disp_state);
+
             // std::cout << "Current States" << std::endl;
             // current_state_->printStatePositions(std::cout);
             // std::cout << "Solutionn States" << std::endl;
@@ -279,18 +299,18 @@ bool BIO_IK_Planner::plan()
         {
 
             valid_goal_ = true;
-            // *goal_state_ = solution_state;
-            for (auto& group : bio_groups_)
-            {
-                group->filter_state(solution_state, goal_state_);
-            }
+            *goal_state_ = solution_state;
+            // for (auto& group : bio_groups_)
+            // {
+            //     group->filter_state(solution_state, goal_state_);
+            // }
         }
     }
     
 
     if (valid_goal_)
     {
-
+        // RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "Found goal!");
         planning_scene_monitor::LockedPlanningSceneRO scene_ro(planning_scene_monitor_);
         moveit::core::RobotState interp_state(*current_state_);
         
@@ -327,15 +347,34 @@ bool BIO_IK_Planner::plan()
         // interp_state.copyJointGroupPositions(main_group_, interp_joint_state);
 
         // current_state_->setJointGroupPositions(main_group_, interp_joint_state); // = interp_state;
+        
+        double angular_motion = 0;
+        std::vector<double> prev_joint;
+        
+        current_state_->copyJointGroupPositions(main_group_, prev_joint);
+
         *current_state_ = interp_state;
         
         current_state_->copyJointGroupPositions(main_group_, previous_joints_);
+        
+        for (int i = 0; i < (int)std::min(prev_joint.size(), previous_joints_.size()); i++)
+        {
+            angular_motion = angular_motion + std::fabs(prev_joint[i]-previous_joints_[i]);
+        }
 
+        if (angular_motion < 0.001)
+        {
+            RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "Commanded position is the same as current position");
+            return false;
+        }
+        
         moveit_msgs::msg::RobotState display_state;
+        moveit_msgs::msg::DisplayRobotState disp_state;
 
         moveit::core::robotStateToRobotStateMsg(*current_state_, display_state);
+        disp_state.state = display_state;
 
-        demo_state_pub_->publish(display_state);
+        demo_state_pub_->publish(disp_state);
         
         return true;
     }
@@ -343,7 +382,7 @@ bool BIO_IK_Planner::plan()
     {
         return false;
     }
-
+    
 }
     
 void BIO_IK_Planner::publish()
@@ -378,14 +417,19 @@ passive_(passive)
     {
         std::string sub_topic;
 
+        parent.Node_->declare_parameter(name+".position_weight", 0.0d);
         position_weight_ = parent.Node_->get_parameter(name+".position_weight").as_double();
         
+        parent.Node_->declare_parameter(name+".orient_weight", 0.0d);
         orientation_weight_ = parent.Node_->get_parameter(name+".orient_weight").as_double();
         
+        parent.Node_->declare_parameter(name+".pose_weight", 0.0d);
         pose_weight_ = parent.Node_->get_parameter(name+".pose_weight").as_double();
         
+        parent.Node_->declare_parameter(name+".z_weight", 0.0d);
         z_weight_ = parent.Node_->get_parameter(name+".z_weight").as_double();
 
+        parent.Node_->declare_parameter(name+".goal_link", 0.0d);
         goal_link_ = parent.Node_->get_parameter(name+".goal_link").as_string();
         
         goal_pose_ = eigenIsometry3dToTf2Transform(parent.current_state_->getFrameTransform(goal_link_));
@@ -397,6 +441,7 @@ passive_(passive)
             exit(-1);
         }
 
+        parent.Node_->declare_parameter(name+".sub_topic", std::string("/")+name+std::string("/sub"));
         sub_topic = parent.Node_->get_parameter(name+".sub_topic").as_string();
 
         sub_ = parent.Node_->create_subscription<geometry_msgs::msg::PoseStamped>(sub_topic, 1,
@@ -475,14 +520,17 @@ BIO_IK_Planner::BIO_IK_Group::BIO_IK_Group(BIO_IK_Planner& parent, std::string g
     double hz, std::vector<double> joint_max_speed, bool passive)
 : 
 BIO_IK_Planner::BIO_IK_Pose_Goal(parent, group_name, base_link, passive),
-freq_(hz),
 group_name_(group_name),
 max_speeds_(joint_max_speed),
 joint_names_(joint_names)
 {
     std::string sub_topic, pub_topic;
-        
+    
+    parent.Node_->declare_parameter(group_name_+".pub_topic",std::string("/")+group_name_+std::string("/pub"));
     pub_topic = parent.Node_->get_parameter(group_name_+".pub_topic").as_string();
+
+    parent.Node_->declare_parameter(group_name_+".allowable_lag", -1.0d);
+    allowable_lag_ = parent.Node_->get_parameter(group_name_+".allowable_lag").as_double();
 
     pub_ = parent.Node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(pub_topic, 1);
     
@@ -560,15 +608,43 @@ void BIO_IK_Planner::BIO_IK_Group::filter_state(moveit::core::RobotState &new_st
     // }
 }
 
+void BIO_IK_Planner::BIO_IK_Group::update_current_state(moveit::core::RobotState new_state, moveit::core::RobotStatePtr old_state)
+{
+    if (allowable_lag_ < 0)
+        return;
+    
+    std::vector<double> new_angles, old_angles;
+    double angle_delta;
+
+    new_state.copyJointGroupPositions(group_name_, new_angles);
+    old_state->copyJointGroupPositions(group_name_, old_angles);
+
+    for (int i = 0; i < new_angles.size(); i++)
+    {
+        angle_delta = new_angles[i]-old_angles[i];
+        if (std::fabs(angle_delta) > allowable_lag_)
+        {
+            old_angles[i] += std::copysign(angle_delta, allowable_lag_);
+        }
+    }
+
+    old_state->setJointGroupActivePositions(group_name_, old_angles);
+
+}
+
 void BIO_IK_Planner::BIO_IK_Group::create_trajectory(std::vector<double> position)
 {
     std::vector<double> velocity;
+    std::vector<double> acceleration;
     for (int i = 0; i < position.size(); i++)
     {
         velocity.push_back((position[i] - traj_.points[0].positions[i])*freq_);
+        acceleration.push_back(0.05);
     }
     traj_.header.frame_id = base_link_;
     traj_.points[0].positions = position;
+    traj_.points[0].velocities = velocity;
+    traj_.points[0].accelerations = acceleration;
     
     traj_.points[0].time_from_start = rclcpp::Duration::from_seconds(1.0/freq_);
 }
@@ -583,7 +659,11 @@ parent_(parent)
 {
     std::string sub_topic;
 
+    parent.Node_->declare_parameter(name+".sub_topic",std::string("/")+name+std::string("/sub"));
     sub_topic = parent.Node_->get_parameter(name+".sub_topic").as_string();
+    
+    
+    parent.Node_->declare_parameter(name+".default_weight",0.0d);
     default_weight_ = parent.Node_->get_parameter(name+".default_weight").as_double();
 
     goal_ = sensor_msgs::msg::JointState();

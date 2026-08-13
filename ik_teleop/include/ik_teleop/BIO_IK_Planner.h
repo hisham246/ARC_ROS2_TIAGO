@@ -3,11 +3,12 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include <rclcpp/rclcpp.hpp>
 #include <ik_teleop/Utils.h>
 
-#include <moveit_msgs/msg/display_robot_state.h>
+#include <moveit_msgs/msg/display_robot_state.hpp>
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/robot_state/conversions.h>
 #include <moveit/robot_state/robot_state.h>
@@ -88,6 +89,8 @@ protected:
         
         void filter_state(moveit::core::RobotState &new_state, moveit::core::RobotStatePtr old_state);
 
+        void update_current_state(moveit::core::RobotState new_state, moveit::core::RobotStatePtr current_state);
+
         void publish_trajectory();
 
         void create_trajectory(std::vector<double> position);
@@ -104,7 +107,7 @@ protected:
         std::vector<std::string> joint_names_;
         std::vector<double> max_speeds_;
         
-        double freq_;
+        double allowable_lag_;
     };
 
     // Nested class for additional joint goal
@@ -151,7 +154,7 @@ protected:
     
     moveit::core::GroupStateValidityCallbackFn callback_;
     
-    rclcpp::Publisher<moveit_msgs::msg::RobotState>::SharedPtr demo_state_pub_, demo_ik_state_pub_;
+    rclcpp::Publisher<moveit_msgs::msg::DisplayRobotState>::SharedPtr demo_state_pub_, demo_ik_state_pub_;
 
     bool valid_goal_=false;
     
