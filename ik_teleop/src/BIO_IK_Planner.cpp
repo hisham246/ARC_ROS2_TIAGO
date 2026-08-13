@@ -48,11 +48,11 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
     min_displacement_joints_weights_= Node_->get_parameter("min_displacement_joints_weights").as_double_array();
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load ik timeout");
-    Node_->declare_parameter("ik_timeout", 0.0d);
+    Node_->declare_parameter("ik_timeout", 0.0001d);
     ik_timeout_ = Node_->get_parameter("ik_timeout").as_double();
 
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load max speed");
-    Node_->declare_parameter("default_max_speed", 0.0d);
+    Node_->declare_parameter("default_max_speed", 0.1d);
     default_max_speed = Node_->get_parameter("default_max_speed").as_double();
     
     std::vector<std::string> pose_goals;
@@ -130,6 +130,9 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
     
     for (const std::string& group_name : groups_)
     {
+        Node_->declare_parameter(group_name+".speed_mult", 1.0d);
+        double speed_mult = Node_->get_parameter(group_name+".speed_mult").as_double();
+
         RCLCPP_WARN_STREAM(Node_->get_logger(), "Making group: " << group_name);
         const moveit::core::JointModelGroup *jmg = current_state_->getJointModelGroup(group_name);
         const std::vector<const moveit::core::JointModel::Bounds*>& bounds = jmg->getActiveJointModelsBounds();
@@ -153,7 +156,7 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
                 }
                 else
                 {
-                    max_speeds.push_back((*var_bounds)[0].max_velocity_*0.25);
+                    max_speeds.push_back((*var_bounds)[0].max_velocity_*speed_mult);
                 }
             }
             else
@@ -167,7 +170,7 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
         
         Node_->declare_parameter(group_name+".passive_group", false);
         bool passive_group = Node_->get_parameter(group_name+".passive_group").as_bool();
-        
+
         bio_groups_.push_back(new BIO_IK_Group(*this, group_name, joint_names, current_position, root_link_, hz, max_speeds, passive_group));
     }
 
