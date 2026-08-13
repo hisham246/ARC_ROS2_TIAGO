@@ -22,7 +22,9 @@ class CycleExpressions(Node):
         self.start_time = self.get_clock().now()
 
     def publish_expression(self, msg):
-
+        # print("Hi!")
+        # print(msg.data)
+        # print(len(msg.data))
         self.buffer_class.append(msg.data[0])
         self.buffer_perc.append(msg.data[1])
 
@@ -32,7 +34,7 @@ class CycleExpressions(Node):
 
         cur_time = self.get_clock().now()
 
-        if (self.start_time-cur_time).nanoseconds > 1.0e9/self.publish_rate:
+        if (cur_time-self.start_time).nanoseconds > 1.0e9/self.publish_rate:
             outmsg = Expression()
             
             outmsg.expression = self.expressions[self.buffer_class[np.argmax(self.buffer_perc)]]
@@ -42,8 +44,11 @@ class CycleExpressions(Node):
             self.publisher_.publish(outmsg)
 
 
-if __name__ == '__main__':
-    rclpy.init()
+def main(args=None):
+    rclpy.init(args=args)
     node = CycleExpressions()
     rclpy.spin(node)
     rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()

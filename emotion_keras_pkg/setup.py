@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'emotion_keras = emotion_keras_pkg.emotion_keras:main',
-            'emotion_out_tiago = emotion_keras_pkg.emotion_output_tiago:main'
+            'emotion_out_tiago = emotion_keras_pkg.emotion_output_tiago:main',
+            'display_image = emotion_keras_pkg.display_image:main'
         ],
     },
 )

@@ -154,7 +154,7 @@ def start_move_group(context, *args, **kwargs):
         name = 'IK_control_node',
         executable = 'control_node',
         output="screen",
-        parameters = [{"use_sim_time": True},
+        parameters = [{"use_sim_time": LaunchConfiguration('use_sim_time')},
                     config_control_node,
                     moveit_config.to_dict()]
     )
