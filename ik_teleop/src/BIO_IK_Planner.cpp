@@ -55,26 +55,17 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
     Node_->declare_parameter("default_max_speed", 0.1d);
     default_max_speed = Node_->get_parameter("default_max_speed").as_double();
     
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load Pose Goals");
     std::vector<std::string> pose_goals;
-    try
-    {
-        pose_goals = Node_->get_parameter("pose_goals").as_string_array();
-    }
-    catch (...)
-    {
+    Node_->declare_parameter("pose_goals", pose_goals);
+    pose_goals = Node_->get_parameter("pose_goals").as_string_array();
 
-    }
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load Joint Goals");
     std::vector<std::string> joint_goals;
-    
-    try
-    {
-        joint_goals = Node_->get_parameter("joint_goals").as_string_array();
-    }
-    catch (...)
-    {
-        
-    }
+    Node_->declare_parameter("joint_goals", joint_goals);
+    joint_goals = Node_->get_parameter("joint_goals").as_string_array();
 
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Get Robot State");
     planning_scene_monitor_ = std::make_shared<planning_scene_monitor::PlanningSceneMonitor>(Node_, robot_model_loader_, "planning_scene_monitor");
     if (!planning_scene_monitor_->getPlanningScene())
     {
@@ -128,8 +119,10 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
         RCLCPP_WARN_STREAM(Node_->get_logger(), name);
     }
     
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Create all Motion Groups");
     for (const std::string& group_name : groups_)
     {
+        RCLCPP_WARN_STREAM(Node_->get_logger(), std::string("Creating Motion Group: ") + group_name);
         Node_->declare_parameter(group_name+".speed_mult", 1.0d);
         double speed_mult = Node_->get_parameter(group_name+".speed_mult").as_double();
 
@@ -174,6 +167,7 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
         bio_groups_.push_back(new BIO_IK_Group(*this, group_name, joint_names, current_position, root_link_, hz, max_speeds, passive_group));
     }
 
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Adding Additional Pose and Joint Goals");
     for (const std::string& name : pose_goals)
     {
         bio_pose_goals_.push_back(new BIO_IK_Pose_Goal(*this, name, root_link_, false));
