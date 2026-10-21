@@ -19,6 +19,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/XRMod.msg"
   "msg/XRPose.msg"
+  "srv/BoolTrigger.srv"
   DEPENDENCIES builtin_interfaces std_msgs geometry_msgs
  )
 
