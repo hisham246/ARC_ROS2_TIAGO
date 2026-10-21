@@ -535,6 +535,8 @@ group_name_(group_name),
 max_speeds_(joint_max_speed),
 joint_names_(joint_names)
 {
+    freq_ = hz;
+
     std::string sub_topic, pub_topic;
     
     declare_if_missing(parent.Node_, group_name_+".pub_topic",std::string("/")+group_name_+std::string("/pub"));
