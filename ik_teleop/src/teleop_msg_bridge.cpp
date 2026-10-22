@@ -88,9 +88,10 @@ class bridge : public rclcpp::Node
             Right.header.frame_id = base_link_;
             Head.header.frame_id = base_link_;
 
-            Left.header.stamp = time;
-            Right.header.stamp = time;
-            Head.header.stamp = time;
+            // Zero stamp = latest transform, so the planner's TF lookup works with sim time as well as wall time
+            Left.header.stamp = rclcpp::Time(0, 0, RCL_ROS_TIME);
+            Right.header.stamp = rclcpp::Time(0, 0, RCL_ROS_TIME);
+            Head.header.stamp = rclcpp::Time(0, 0, RCL_ROS_TIME);
             
             // A device that is not tracked reports a pose at the origin; only the enabled devices have to be tracked.
             if ((enable_left_ && is_empty(message->left_controller_pose)) ||
