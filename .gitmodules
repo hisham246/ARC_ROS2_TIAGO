@@ -1,13 +1,12 @@
+[submodule "ROS-TCP-Endpoint"]
+    path=ROS-TCP-Endpoint
+    url=https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git
+    branch=main-ros2
 
 [submodule "fp"]
     path=fp
     url=https://github.com/tylerjw/fp
     branch=main
-
-[submodule "pal_gazebo_worlds"]
-    path=pal_gazebo_worlds
-    url=https://github.com/pal-robotics/pal_gazebo_worlds.git
-    branch=humble-devel
 
 [submodule "pick_ik"]
     path=pick_ik
@@ -34,22 +33,3 @@
     url=https://github.com/pal-robotics/tiago_dual_simulation.git
     branch=humble-devel
 
-[submodule "cv_camera"]
-    path=cv_camera
-    url=https://github.com/Kapernikov/cv_camera.git
-    branch=main
-
-[submodule "audio_utils"]
-    path=audio_utils
-    url=https://github.com/introlab/audio_utils.git
-    branch=main
-
-[submodule "odas_ros"]
-    path=odas_ros
-    url=https://github.com/introlab/odas_ros.git
-    branch=main
-
-[submodule "opentera-webrtc-ros"]
-    path=opentera-webrtc-ros
-    url=https://github.com/introlab/opentera-webrtc-ros.git
-    branch=main
