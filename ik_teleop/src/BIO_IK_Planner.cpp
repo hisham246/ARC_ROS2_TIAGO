@@ -239,7 +239,7 @@ bool BIO_IK_Planner::plan()
 
     if (new_message)
     {
-        // RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "New Message");
+        // RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 500, "New Message");
         bio_ik::BioIKKinematicsQueryOptions query;
         query.return_approximate_solution = true;
         query.lock_redundant_joints = false;
@@ -287,7 +287,7 @@ bool BIO_IK_Planner::plan()
 
         if (!found_ik)
         {
-            RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "No IK Found");
+            RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 500, "No IK Found");
         }
         else
         {
@@ -307,7 +307,7 @@ bool BIO_IK_Planner::plan()
             if (check_end_state_collision_ && scene_ro->isStateColliding(solution_state, main_group_, true))
             {
                 found_ik = false;
-                RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "Planned End State Colliding");
+                RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 500, "Planned End State Colliding");
             }
         }
 
@@ -326,7 +326,7 @@ bool BIO_IK_Planner::plan()
 
     if (valid_goal_)
     {
-        // RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "Found goal!");
+        // RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 500, "Found goal!");
         planning_scene_monitor::LockedPlanningSceneRO scene_ro(planning_scene_monitor_);
         moveit::core::RobotState interp_state(*current_state_);
         
@@ -380,7 +380,7 @@ bool BIO_IK_Planner::plan()
 
         if (angular_motion < 0.001)
         {
-            RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "Commanded position is the same as current position");
+            RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 500, "Commanded position is the same as current position");
             return false;
         }
         
@@ -513,6 +513,9 @@ void BIO_IK_Planner::BIO_IK_Pose_Goal::commandCallback(const geometry_msgs::msg:
         tf2::convert(parent_.tf_buffer->transform(cmd, base_link_, tf2::durationFromSec(0.1)).pose, goal_pose_);
         initialized_ = true;
         new_message_ = true;
+        RCLCPP_INFO_STREAM_THROTTLE(parent_.Node_->get_logger(), *(parent_.Node_->get_clock()), 1000,
+            "Goal received (" << cmd.header.frame_id << " -> " << base_link_ << "): "
+            << goal_pose_.getOrigin().x() << ", " << goal_pose_.getOrigin().y() << ", " << goal_pose_.getOrigin().z());
     }
     catch (tf2::TransformException &ex)
     {
