@@ -282,7 +282,8 @@ bool BIO_IK_Planner::plan()
                                                 moveit::core::GroupStateValidityCallbackFn(), // callback_,
                                                 query);
         
-        // RCLCPP_ERROR_STREAM(Node_->get_logger(), "Solution Fitness " << query.solution_fitness);
+        RCLCPP_INFO_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 1000,
+            "IK found: " << found_ik << ", solution fitness: " << query.solution_fitness);
 
         if (!found_ik)
         {
