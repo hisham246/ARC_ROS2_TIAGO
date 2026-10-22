@@ -10,6 +10,8 @@ IK_control_node:
     center_joints_weight: 0.0
     min_displacement_weight: 0.01
     ik_timeout: 0.02
+    # Debug only: false lets the planner publish solutions that the end-state self-collision check would reject
+    check_end_state_collision: true
     default_max_speed: 1.0
     min_displacement_joints: ["torso_lift_joint"]
     min_displacement_joints_weights: [0.1]

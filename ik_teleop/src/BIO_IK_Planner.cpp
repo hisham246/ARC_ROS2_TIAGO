@@ -69,6 +69,10 @@ BIO_IK_Planner::BIO_IK_Planner(rclcpp::Node::SharedPtr Node):
     declare_if_missing(Node_, "default_max_speed", 0.1d);
     default_max_speed = Node_->get_parameter("default_max_speed").as_double();
     
+    RCLCPP_WARN_STREAM(Node_->get_logger(), "Load collision check");
+    declare_if_missing(Node_, "check_end_state_collision", true);
+    check_end_state_collision_ = Node_->get_parameter("check_end_state_collision").as_bool();
+
     RCLCPP_WARN_STREAM(Node_->get_logger(), "Load Pose Goals");
     std::vector<std::string> pose_goals;
     declare_if_missing(Node_, "pose_goals", pose_goals);
@@ -299,7 +303,7 @@ bool BIO_IK_Planner::plan()
             // std::cout << "Solutionn States" << std::endl;
             // solution_state.printStatePositions(std::cout);
             planning_scene_monitor::LockedPlanningSceneRO scene_ro(planning_scene_monitor_);
-            if (scene_ro->isStateColliding(solution_state, main_group_, true))
+            if (check_end_state_collision_ && scene_ro->isStateColliding(solution_state, main_group_, true))
             {
                 found_ik = false;
                 RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 0.5, "Planned End State Colliding");

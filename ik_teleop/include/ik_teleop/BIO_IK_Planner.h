@@ -139,6 +139,7 @@ protected:
     };
 
     double center_weight_, min_disp_weight_, ik_timeout_;
+    bool check_end_state_collision_ = true;
 
     std::string main_group_, root_link_;
     std::vector<std::string> groups_, min_displacement_joints_;
