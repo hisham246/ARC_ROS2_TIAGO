@@ -36,6 +36,13 @@ class bridge : public rclcpp::Node
             this->declare_parameter("sub_topic", std::string("XR_Input"));
             XR_top = this->get_parameter("sub_topic").as_string();
 
+            this->declare_parameter("enable_left", true);
+            this->declare_parameter("enable_right", true);
+            this->declare_parameter("enable_head", true);
+            enable_left_ = this->get_parameter("enable_left").as_bool();
+            enable_right_ = this->get_parameter("enable_right").as_bool();
+            enable_head_ = this->get_parameter("enable_head").as_bool();
+
             tool_left_trans_ = get_transformation("left_tool_trans");
             tool_right_trans_ = get_transformation("right_tool_trans");
             tool_head_trans_ = get_transformation("head_tool_trans");
@@ -70,33 +77,39 @@ class bridge : public rclcpp::Node
             Right.header.stamp = time;
             Head.header.stamp = time;
             
-            if (((fabs(message->left_controller_pose.position.x) + fabs(message->left_controller_pose.position.y)+fabs(message->left_controller_pose.position.z)) < 0.001) || 
-                ((fabs(message->right_controller_pose.position.x) + fabs(message->right_controller_pose.position.y)+fabs(message->right_controller_pose.position.z)) < 0.001) || 
-                ((fabs(message->hmd_pose.position.x) + fabs(message->hmd_pose.position.y)+fabs(message->hmd_pose.position.z)) < 0.001))
-                {
-                    // RCLCPP_WARN_STREAM(this->get_logger(), "Empty Message!");
-                    return;
-                }
+            // A device that is not tracked reports a pose at the origin; only the enabled devices have to be tracked.
+            if ((enable_left_ && is_empty(message->left_controller_pose)) ||
+                (enable_right_ && is_empty(message->right_controller_pose)) ||
+                (enable_head_ && is_empty(message->hmd_pose)))
+            {
+                return;
+            }
 
-            transform_pose(message->left_controller_pose, Left.pose, world_left_trans_, tool_left_trans_);
-            transform_pose(message->right_controller_pose, Right.pose, world_right_trans_, tool_right_trans_);
-            transform_pose(message->hmd_pose, Head.pose, world_head_trans_, tool_head_trans_);
-            
-            // Left.pose = message->left_controller_pose;
-            // Right.pose = message->right_controller_pose;
-            // Head.pose = message->hmd_pose;
-
-            left_squeeze.data = message->left_squeeze;
-            right_squeeze.data = message->right_squeeze;
-
-            L_pose_pub_->publish(Left);
-            R_pose_pub_->publish(Right);
-            Head_pose_pub_->publish(Head);
-
-            L_grip_pub_->publish(left_squeeze);
-            R_grip_pub_->publish(right_squeeze);
-
+            if (enable_left_)
+            {
+                transform_pose(message->left_controller_pose, Left.pose, world_left_trans_, tool_left_trans_);
+                left_squeeze.data = message->left_squeeze;
+                L_pose_pub_->publish(Left);
+                L_grip_pub_->publish(left_squeeze);
+            }
+            if (enable_right_)
+            {
+                transform_pose(message->right_controller_pose, Right.pose, world_right_trans_, tool_right_trans_);
+                right_squeeze.data = message->right_squeeze;
+                R_pose_pub_->publish(Right);
+                R_grip_pub_->publish(right_squeeze);
+            }
+            if (enable_head_)
+            {
+                transform_pose(message->hmd_pose, Head.pose, world_head_trans_, tool_head_trans_);
+                Head_pose_pub_->publish(Head);
+            }
         }
+
+    static bool is_empty(const geometry_msgs::msg::Pose &pose)
+    {
+        return (fabs(pose.position.x) + fabs(pose.position.y) + fabs(pose.position.z)) < 0.001;
+    }
 
     void transform_pose(geometry_msgs::msg::Pose input, geometry_msgs::msg::Pose &output, Eigen::Affine3d world_transform, Eigen::Affine3d tool_transform)
     {
@@ -149,6 +162,7 @@ class bridge : public rclcpp::Node
     rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr L_grip_pub_, R_grip_pub_;
     
     std::string base_link_;
+    bool enable_left_, enable_right_, enable_head_;
 
     Eigen::Affine3d tool_left_trans_, tool_right_trans_, tool_head_trans_, world_left_trans_, world_right_trans_, world_head_trans_;
 

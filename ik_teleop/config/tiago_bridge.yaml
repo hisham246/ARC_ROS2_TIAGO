@@ -2,6 +2,11 @@ teleop_bridge:
   ros__parameters:
     base_link: "base_link"
 
+    # Only enabled devices need to be tracked and are published
+    enable_left: false
+    enable_right: true
+    enable_head: false
+
     left_pose_topic:  "/left_arm_cmd"
     right_pose_topic: "/right_arm_cmd"
     head_pose_topic:  "/head_cmd"

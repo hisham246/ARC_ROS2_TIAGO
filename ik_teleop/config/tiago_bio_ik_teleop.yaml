@@ -3,7 +3,8 @@ IK_control_node:
     frequency: 20.0
     main_group: "full_body"
     root_link: "torso_base_link"
-    groups: ["arm_right", "torso", "arm_left", "head"]
+    # right arm only; joints of groups that are not listed are held at their current position
+    groups: ["arm_right", "torso"]
     # pose_goals: []
     # joint_goals: []
     center_joints_weight: 0.0
