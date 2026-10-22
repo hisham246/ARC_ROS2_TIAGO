@@ -44,6 +44,12 @@ class LaunchArguments(LaunchArgumentsBase):
     ft_sensor_left: DeclareLaunchArgument = TiagoProArgs.ft_sensor_left
     base_type: DeclareLaunchArgument = TiagoProArgs.base_type
 
+    dry_run: DeclareLaunchArgument = DeclareLaunchArgument(
+        'dry_run',
+        default_value='false',
+        description='If true, trajectories go to /dry_run/... topics and the grippers are not started, '
+                    'so the planner can be watched in RViz without the robot moving')
+
     use_sim_time: DeclareLaunchArgument = CommonArgs.use_sim_time
     use_sensor_manager_arg: DeclareLaunchArgument = CommonArgs.use_sensor_manager
 
@@ -61,6 +67,7 @@ def start_move_group(context, *args, **kwargs):
     end_effector_right = read_launch_argument('end_effector_right', context)
     end_effector_left = read_launch_argument('end_effector_left', context)
     use_sensor_manager = read_launch_argument('use_sensor_manager', context)
+    dry_run = str(read_launch_argument('dry_run', context)).lower() == 'true'
 
     hw_suffix = get_tiago_pro_hw_suffix(
         arm_right=arm_type_right,
@@ -149,14 +156,24 @@ def start_move_group(context, *args, **kwargs):
         'tiago_bio_ik_teleop.yaml'
         )
 
+    control_params = [{"use_sim_time": LaunchConfiguration('use_sim_time')},
+                      config_control_node,
+                      moveit_config.to_dict()]
+    if dry_run:
+        # last parameters win: redirect every group's output away from the real controllers
+        control_params.append({
+            'arm_left.pub_topic': '/dry_run/arm_left_controller/joint_trajectory',
+            'arm_right.pub_topic': '/dry_run/arm_right_controller/joint_trajectory',
+            'torso.pub_topic': '/dry_run/torso_controller/joint_trajectory',
+            'head.pub_topic': '/dry_run/head_controller/joint_trajectory',
+        })
+
     control_node=Node(
         package = 'ik_teleop',
         name = 'IK_control_node',
         executable = 'control_node',
         output="screen",
-        parameters = [{"use_sim_time": LaunchConfiguration('use_sim_time')},
-                    config_control_node,
-                    moveit_config.to_dict()]
+        parameters = control_params
     )
 
     config_bridge = os.path.join(
@@ -198,12 +215,14 @@ def start_move_group(context, *args, **kwargs):
                 'launch/tiago_gripper_passthrough.launch.xml'))
     )
 
-    return [
+    actions = [
         # run_move_group_node,
         control_node,
         bridge_node,
-        rviz_node,
-        launch_include]
+        rviz_node]
+    if not dry_run:
+        actions.append(launch_include)
+    return actions
 
 
 def generate_launch_description():
