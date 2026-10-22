@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-828e68762a57d07cb0be.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "gripper_traj_passthrough",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "gripper_traj_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gripper_traj_node-b195dcf3d14fb9be7307.json",
+					"name" : "gripper_traj_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gripper_traj_passthrough_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gripper_traj_passthrough_uninstall-31d0ecc14b92a7075945.json",
+					"name" : "gripper_traj_passthrough_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-9783f1a7682547180993.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/aist/hisham/ARC_ROS2_TIAGO/build/gripper_traj_passthrough",
+		"source" : "/home/aist/hisham/ARC_ROS2_TIAGO/gripper_traj_passthrough"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

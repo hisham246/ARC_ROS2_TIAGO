@@ -1,0 +1,8 @@
+{
+  "package_name": "custom_teleop_messages",
+  "non_idl_tuples": [
+    "/home/aist/hisham/ARC_ROS2_TIAGO/custom_teleop_messages:msg/XRMod.msg",
+    "/home/aist/hisham/ARC_ROS2_TIAGO/custom_teleop_messages:msg/XRPose.msg",
+    "/home/aist/hisham/ARC_ROS2_TIAGO/custom_teleop_messages:srv/BoolTrigger.srv"
+  ]
+}

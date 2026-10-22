@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/aist/hisham/ARC_ROS2_TIAGO/build/gripper_traj_passthrough/gripper_traj_node" "TARGETS" "gripper_traj_node" "DESTINATION" "lib/gripper_traj_passthrough")

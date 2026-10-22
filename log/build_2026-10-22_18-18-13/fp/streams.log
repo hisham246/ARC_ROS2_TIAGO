@@ -1,0 +1,30 @@
+[0.069s] Invoking command in '/home/aist/hisham/ARC_ROS2_TIAGO/build/fp': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/aist/hisham/ARC_ROS2_TIAGO/fp -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/fp
+[1.932s] -- The CXX compiler identification is GNU 11.4.0
+[2.211s] -- Detecting CXX compiler ABI info
+[2.514s] -- Detecting CXX compiler ABI info - done
+[2.518s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[2.518s] -- Detecting CXX compile features
+[2.552s] -- Detecting CXX compile features - done
+[3.188s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[3.603s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[3.931s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[4.518s] [31mCMake Error at CMakeLists.txt:15 (find_package):
+[4.518s]   By not providing "Findrange-v3.cmake" in CMAKE_MODULE_PATH this project has
+[4.518s]   asked CMake to find a package configuration file provided by "range-v3",
+[4.518s]   but CMake did not find one.
+[4.518s] 
+[4.518s]   Could not find a package configuration file provided by "range-v3" with any
+[4.518s]   of the following names:
+[4.518s] 
+[4.518s]     range-v3Config.cmake
+[4.518s]     range-v3-config.cmake
+[4.518s] 
+[4.518s]   Add the installation prefix of "range-v3" to CMAKE_PREFIX_PATH or set
+[4.518s]   "range-v3_DIR" to a directory containing one of the above files.  If
+[4.519s]   "range-v3" provides a separate development package or SDK, be sure it has
+[4.519s]   been installed.
+[4.519s] 
+[4.519s] [0m
+[4.519s] -- Configuring incomplete, errors occurred!
+[4.519s] See also "/home/aist/hisham/ARC_ROS2_TIAGO/build/fp/CMakeFiles/CMakeOutput.log".
+[4.521s] Invoked command in '/home/aist/hisham/ARC_ROS2_TIAGO/build/fp' returned '1': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/aist/hisham/ARC_ROS2_TIAGO/fp -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/fp

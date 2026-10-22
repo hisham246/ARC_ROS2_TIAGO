@@ -1,0 +1,21 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/custom_teleop_messages__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/msg/detail/dds_fastrtps/xr_mod__type_support.cpp.o"
+  "CMakeFiles/custom_teleop_messages__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/msg/detail/dds_fastrtps/xr_mod__type_support.cpp.o.d"
+  "CMakeFiles/custom_teleop_messages__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/msg/detail/dds_fastrtps/xr_pose__type_support.cpp.o"
+  "CMakeFiles/custom_teleop_messages__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/msg/detail/dds_fastrtps/xr_pose__type_support.cpp.o.d"
+  "CMakeFiles/custom_teleop_messages__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/srv/detail/dds_fastrtps/bool_trigger__type_support.cpp.o"
+  "CMakeFiles/custom_teleop_messages__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/srv/detail/dds_fastrtps/bool_trigger__type_support.cpp.o.d"
+  "libcustom_teleop_messages__rosidl_typesupport_fastrtps_cpp.pdb"
+  "libcustom_teleop_messages__rosidl_typesupport_fastrtps_cpp.so"
+  "rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/msg/detail/dds_fastrtps/xr_mod__type_support.cpp"
+  "rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/msg/detail/dds_fastrtps/xr_pose__type_support.cpp"
+  "rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/msg/detail/xr_mod__rosidl_typesupport_fastrtps_cpp.hpp"
+  "rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/msg/detail/xr_pose__rosidl_typesupport_fastrtps_cpp.hpp"
+  "rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/srv/detail/bool_trigger__rosidl_typesupport_fastrtps_cpp.hpp"
+  "rosidl_typesupport_fastrtps_cpp/custom_teleop_messages/srv/detail/dds_fastrtps/bool_trigger__type_support.cpp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/custom_teleop_messages__rosidl_typesupport_fastrtps_cpp.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

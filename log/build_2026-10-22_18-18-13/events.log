@@ -1,0 +1,201 @@
+[0.000000] (-) TimerEvent: {}
+[0.000175] (custom_teleop_messages) JobQueued: {'identifier': 'custom_teleop_messages', 'dependencies': OrderedDict()}
+[0.000200] (fp) JobQueued: {'identifier': 'fp', 'dependencies': OrderedDict()}
+[0.000214] (gripper_traj_passthrough) JobQueued: {'identifier': 'gripper_traj_passthrough', 'dependencies': OrderedDict()}
+[0.000225] (bio_ik) JobQueued: {'identifier': 'bio_ik', 'dependencies': OrderedDict([('fp', '/home/aist/hisham/ARC_ROS2_TIAGO/install/fp')])}
+[0.000237] (ik_teleop) JobQueued: {'identifier': 'ik_teleop', 'dependencies': OrderedDict([('custom_teleop_messages', '/home/aist/hisham/ARC_ROS2_TIAGO/install/custom_teleop_messages'), ('fp', '/home/aist/hisham/ARC_ROS2_TIAGO/install/fp'), ('bio_ik', '/home/aist/hisham/ARC_ROS2_TIAGO/install/bio_ik')])}
+[0.000543] (fp) JobStarted: {'identifier': 'fp'}
+[0.062451] (custom_teleop_messages) JobStarted: {'identifier': 'custom_teleop_messages'}
+[0.064951] (gripper_traj_passthrough) JobStarted: {'identifier': 'gripper_traj_passthrough'}
+[0.067653] (fp) JobProgress: {'identifier': 'fp', 'progress': 'cmake'}
+[0.068030] (fp) Command: {'cmd': ['/usr/bin/cmake', '/home/aist/hisham/ARC_ROS2_TIAGO/fp', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/fp'], 'cwd': '/home/aist/hisham/ARC_ROS2_TIAGO/build/fp', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aist'), ('LC_TIME', 'ja_JP.UTF-8'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/aist'), ('CONDA_SHLVL', '0'), ('CYCLONEDDS_URI', '/home/aist/hisham/ARC_ROS2_TIAGO/tiagoDDS.xml'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/terminator.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'ja_JP.UTF-8'), ('MANAGERPID', '12757'), ('SYSTEMD_EXEC_PID', '13082'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_CE_M', ''), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator23558193cd9818af7fe4d2c2f5bd9d00f'), ('_CONDA_ROOT', '/home/aist/miniconda3'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '624696'), ('ROS_DISTRO', 'humble'), ('GTK_IM_MODULE', 'ibus'), ('LOGNAME', 'aist'), ('JOURNAL_STREAM', '8:124976'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'aist'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/opt/ros/humble/bin:/home/aist/miniconda3/condabin:/home/aist/.local/bin:/home/aist/.local/bin:/home/aist/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/AIST:@/tmp/.ICE-unix/13059,unix/AIST:/tmp/.ICE-unix/13059'), ('INVOCATION_ID', '6e5a8253ca5040a6bac37b8fac0ecc44'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'ja_JP.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('IBUS_DISABLE_SNOOPER', '1'), ('LC_TELEPHONE', 'ja_JP.UTF-8'), ('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/home/aist/miniconda3/bin/python'), ('SHELL', '/bin/bash'), ('LC_NAME', 'ja_JP.UTF-8'), ('TERMINATOR_UUID', 'urn:uuid:e8f3ed00-6d8f-4332-bcd4-dd3a34c3a4b3'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('LC_MEASUREMENT', 'ja_JP.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('_CONDA_EXE', '/home/aist/miniconda3/bin/conda'), ('LC_IDENTIFICATION', 'ja_JP.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/aist/hisham/ARC_ROS2_TIAGO/build/fp'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('CONDA_EXE', '/home/aist/miniconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'ja_JP.UTF-8'), ('LC_PAPER', 'ja_JP.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.084747] (custom_teleop_messages) JobProgress: {'identifier': 'custom_teleop_messages', 'progress': 'cmake'}
+[0.085145] (custom_teleop_messages) Command: {'cmd': ['/usr/bin/cmake', '/home/aist/hisham/ARC_ROS2_TIAGO/custom_teleop_messages', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/custom_teleop_messages'], 'cwd': '/home/aist/hisham/ARC_ROS2_TIAGO/build/custom_teleop_messages', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aist'), ('LC_TIME', 'ja_JP.UTF-8'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/aist'), ('CONDA_SHLVL', '0'), ('CYCLONEDDS_URI', '/home/aist/hisham/ARC_ROS2_TIAGO/tiagoDDS.xml'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/terminator.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'ja_JP.UTF-8'), ('MANAGERPID', '12757'), ('SYSTEMD_EXEC_PID', '13082'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_CE_M', ''), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator23558193cd9818af7fe4d2c2f5bd9d00f'), ('_CONDA_ROOT', '/home/aist/miniconda3'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '624696'), ('ROS_DISTRO', 'humble'), ('GTK_IM_MODULE', 'ibus'), ('LOGNAME', 'aist'), ('JOURNAL_STREAM', '8:124976'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'aist'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/opt/ros/humble/bin:/home/aist/miniconda3/condabin:/home/aist/.local/bin:/home/aist/.local/bin:/home/aist/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/AIST:@/tmp/.ICE-unix/13059,unix/AIST:/tmp/.ICE-unix/13059'), ('INVOCATION_ID', '6e5a8253ca5040a6bac37b8fac0ecc44'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'ja_JP.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('IBUS_DISABLE_SNOOPER', '1'), ('LC_TELEPHONE', 'ja_JP.UTF-8'), ('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/home/aist/miniconda3/bin/python'), ('SHELL', '/bin/bash'), ('LC_NAME', 'ja_JP.UTF-8'), ('TERMINATOR_UUID', 'urn:uuid:e8f3ed00-6d8f-4332-bcd4-dd3a34c3a4b3'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('LC_MEASUREMENT', 'ja_JP.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('_CONDA_EXE', '/home/aist/miniconda3/bin/conda'), ('LC_IDENTIFICATION', 'ja_JP.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/aist/hisham/ARC_ROS2_TIAGO/build/custom_teleop_messages'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('CONDA_EXE', '/home/aist/miniconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'ja_JP.UTF-8'), ('LC_PAPER', 'ja_JP.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.087002] (gripper_traj_passthrough) JobProgress: {'identifier': 'gripper_traj_passthrough', 'progress': 'cmake'}
+[0.087408] (gripper_traj_passthrough) Command: {'cmd': ['/usr/bin/cmake', '/home/aist/hisham/ARC_ROS2_TIAGO/gripper_traj_passthrough', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/gripper_traj_passthrough'], 'cwd': '/home/aist/hisham/ARC_ROS2_TIAGO/build/gripper_traj_passthrough', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aist'), ('LC_TIME', 'ja_JP.UTF-8'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/aist'), ('CONDA_SHLVL', '0'), ('CYCLONEDDS_URI', '/home/aist/hisham/ARC_ROS2_TIAGO/tiagoDDS.xml'), ('DESKTOP_SESSION', 'ubuntu'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/terminator.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'ja_JP.UTF-8'), ('MANAGERPID', '12757'), ('SYSTEMD_EXEC_PID', '13082'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_CE_M', ''), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator23558193cd9818af7fe4d2c2f5bd9d00f'), ('_CONDA_ROOT', '/home/aist/miniconda3'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '624696'), ('ROS_DISTRO', 'humble'), ('GTK_IM_MODULE', 'ibus'), ('LOGNAME', 'aist'), ('JOURNAL_STREAM', '8:124976'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'aist'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/opt/ros/humble/bin:/home/aist/miniconda3/condabin:/home/aist/.local/bin:/home/aist/.local/bin:/home/aist/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/AIST:@/tmp/.ICE-unix/13059,unix/AIST:/tmp/.ICE-unix/13059'), ('INVOCATION_ID', '6e5a8253ca5040a6bac37b8fac0ecc44'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'ja_JP.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('IBUS_DISABLE_SNOOPER', '1'), ('LC_TELEPHONE', 'ja_JP.UTF-8'), ('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/home/aist/miniconda3/bin/python'), ('SHELL', '/bin/bash'), ('LC_NAME', 'ja_JP.UTF-8'), ('TERMINATOR_UUID', 'urn:uuid:e8f3ed00-6d8f-4332-bcd4-dd3a34c3a4b3'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('LC_MEASUREMENT', 'ja_JP.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('_CONDA_EXE', '/home/aist/miniconda3/bin/conda'), ('LC_IDENTIFICATION', 'ja_JP.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/aist/hisham/ARC_ROS2_TIAGO/build/gripper_traj_passthrough'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('CONDA_EXE', '/home/aist/miniconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'ja_JP.UTF-8'), ('LC_PAPER', 'ja_JP.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.099872] (-) TimerEvent: {}
+[0.200023] (-) TimerEvent: {}
+[0.300229] (-) TimerEvent: {}
+[0.400427] (-) TimerEvent: {}
+[0.500625] (-) TimerEvent: {}
+[0.600822] (-) TimerEvent: {}
+[0.701048] (-) TimerEvent: {}
+[0.801267] (-) TimerEvent: {}
+[0.901503] (-) TimerEvent: {}
+[1.001745] (-) TimerEvent: {}
+[1.101976] (-) TimerEvent: {}
+[1.202172] (-) TimerEvent: {}
+[1.302395] (-) TimerEvent: {}
+[1.402581] (-) TimerEvent: {}
+[1.502737] (-) TimerEvent: {}
+[1.602916] (-) TimerEvent: {}
+[1.703143] (-) TimerEvent: {}
+[1.803342] (-) TimerEvent: {}
+[1.903504] (-) TimerEvent: {}
+[1.932317] (fp) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[1.932457] (gripper_traj_passthrough) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[1.932523] (custom_teleop_messages) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[2.003572] (-) TimerEvent: {}
+[2.045322] (custom_teleop_messages) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[2.051193] (gripper_traj_passthrough) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[2.103632] (-) TimerEvent: {}
+[2.203771] (-) TimerEvent: {}
+[2.211371] (custom_teleop_messages) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[2.211455] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[2.211509] (fp) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[2.303807] (-) TimerEvent: {}
+[2.403967] (-) TimerEvent: {}
+[2.504157] (-) TimerEvent: {}
+[2.514217] (fp) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[2.518743] (fp) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[2.519007] (fp) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[2.534168] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[2.534714] (custom_teleop_messages) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[2.538268] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[2.538418] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[2.538902] (custom_teleop_messages) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[2.539056] (custom_teleop_messages) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[2.551927] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[2.552063] (custom_teleop_messages) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[2.552129] (fp) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[2.554026] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[2.554123] (custom_teleop_messages) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[2.604238] (-) TimerEvent: {}
+[2.607825] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[2.608701] (custom_teleop_messages) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[2.612544] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[2.612735] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[2.613003] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[2.613218] (custom_teleop_messages) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[2.613402] (custom_teleop_messages) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[2.613651] (custom_teleop_messages) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[2.704357] (-) TimerEvent: {}
+[2.804650] (-) TimerEvent: {}
+[2.904816] (-) TimerEvent: {}
+[3.005010] (-) TimerEvent: {}
+[3.105210] (-) TimerEvent: {}
+[3.188202] (custom_teleop_messages) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[3.188374] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[3.188426] (fp) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[3.205272] (-) TimerEvent: {}
+[3.305410] (-) TimerEvent: {}
+[3.405586] (-) TimerEvent: {}
+[3.505814] (-) TimerEvent: {}
+[3.600992] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[3.603413] (fp) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[3.605098] (custom_teleop_messages) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[3.605871] (-) TimerEvent: {}
+[3.706061] (-) TimerEvent: {}
+[3.806268] (-) TimerEvent: {}
+[3.906442] (-) TimerEvent: {}
+[3.931381] (fp) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[3.931477] (custom_teleop_messages) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[3.931518] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[4.006517] (-) TimerEvent: {}
+[4.106685] (-) TimerEvent: {}
+[4.206941] (-) TimerEvent: {}
+[4.245232] (custom_teleop_messages) StdoutLine: {'line': b'-- Found geometry_msgs: 4.9.2 (/opt/ros/humble/share/geometry_msgs/cmake)\n'}
+[4.267732] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found std_msgs: 4.9.2 (/opt/ros/humble/share/std_msgs/cmake)\n'}
+[4.307007] (-) TimerEvent: {}
+[4.407179] (-) TimerEvent: {}
+[4.507367] (-) TimerEvent: {}
+[4.518588] (fp) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:15 (find_package):\n'}
+[4.518710] (fp) StderrLine: {'line': b'  By not providing "Findrange-v3.cmake" in CMAKE_MODULE_PATH this project has\n'}
+[4.518747] (fp) StderrLine: {'line': b'  asked CMake to find a package configuration file provided by "range-v3",\n'}
+[4.518783] (fp) StderrLine: {'line': b'  but CMake did not find one.\n'}
+[4.518814] (fp) StderrLine: {'line': b'\n'}
+[4.518840] (fp) StderrLine: {'line': b'  Could not find a package configuration file provided by "range-v3" with any\n'}
+[4.518889] (fp) StderrLine: {'line': b'  of the following names:\n'}
+[4.518913] (fp) StderrLine: {'line': b'\n'}
+[4.518936] (fp) StderrLine: {'line': b'    range-v3Config.cmake\n'}
+[4.518959] (fp) StderrLine: {'line': b'    range-v3-config.cmake\n'}
+[4.518983] (fp) StderrLine: {'line': b'\n'}
+[4.519007] (fp) StderrLine: {'line': b'  Add the installation prefix of "range-v3" to CMAKE_PREFIX_PATH or set\n'}
+[4.519031] (fp) StderrLine: {'line': b'  "range-v3_DIR" to a directory containing one of the above files.  If\n'}
+[4.519055] (fp) StderrLine: {'line': b'  "range-v3" provides a separate development package or SDK, be sure it has\n'}
+[4.519078] (fp) StderrLine: {'line': b'  been installed.\n'}
+[4.519101] (fp) StderrLine: {'line': b'\n'}
+[4.519124] (fp) StderrLine: {'line': b'\x1b[0m\n'}
+[4.519159] (fp) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[4.519188] (fp) StdoutLine: {'line': b'See also "/home/aist/hisham/ARC_ROS2_TIAGO/build/fp/CMakeFiles/CMakeOutput.log".\n'}
+[4.521264] (fp) CommandEnded: {'returncode': 1}
+[4.607433] (-) TimerEvent: {}
+[4.642167] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[4.642256] (custom_teleop_messages) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[4.707503] (-) TimerEvent: {}
+[4.792116] (custom_teleop_messages) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[4.792214] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[4.807569] (-) TimerEvent: {}
+[4.883972] (fp) JobEnded: {'identifier': 'fp', 'rc': 1}
+[4.901200] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[4.901303] (custom_teleop_messages) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[4.907633] (-) TimerEvent: {}
+[5.007802] (-) TimerEvent: {}
+[5.066902] (custom_teleop_messages) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[5.067115] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[5.107861] (-) TimerEvent: {}
+[5.111010] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[5.111156] (custom_teleop_messages) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[5.207934] (-) TimerEvent: {}
+[5.237831] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found trajectory_msgs: 4.9.2 (/opt/ros/humble/share/trajectory_msgs/cmake)\n'}
+[5.258920] (custom_teleop_messages) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.2.1 (/opt/ros/humble/share/rosidl_default_generators/cmake)\n'}
+[5.307999] (-) TimerEvent: {}
+[5.336483] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found control_msgs: 4.9.0 (/opt/ros/humble/share/control_msgs/cmake)\n'}
+[5.408070] (-) TimerEvent: {}
+[5.508254] (-) TimerEvent: {}
+[5.608481] (-) TimerEvent: {}
+[5.657389] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found rclcpp: 16.0.21 (/opt/ros/humble/share/rclcpp/cmake)\n'}
+[5.681126] (custom_teleop_messages) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.10.1 (/opt/ros/humble/share/ament_cmake_ros/cmake)\n'}
+[5.708538] (-) TimerEvent: {}
+[5.808690] (-) TimerEvent: {}
+[5.908874] (-) TimerEvent: {}
+[5.911716] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.4 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[5.916220] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found rmw_cyclonedds_cpp: 1.3.5 (/opt/ros/humble/share/rmw_cyclonedds_cpp/cmake)\n'}
+[6.008951] (-) TimerEvent: {}
+[6.098009] (custom_teleop_messages) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[6.104897] (gripper_traj_passthrough) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_cyclonedds_cpp' as default\n"}
+[6.109011] (-) TimerEvent: {}
+[6.209169] (-) TimerEvent: {}
+[6.223049] (custom_teleop_messages) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[6.282211] (custom_teleop_messages) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.10.12", minimum required is "3.6") \n'}
+[6.296603] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[6.309226] (-) TimerEvent: {}
+[6.328803] (custom_teleop_messages) StdoutLine: {'line': b'-- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)\n'}
+[6.409301] (-) TimerEvent: {}
+[6.509486] (-) TimerEvent: {}
+[6.539582] (custom_teleop_messages) StdoutLine: {'line': b'-- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") \n'}
+[6.539720] (custom_teleop_messages) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[6.539771] (custom_teleop_messages) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10\n'}
+[6.539816] (custom_teleop_messages) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so\n'}
+[6.552765] (custom_teleop_messages) StdoutLine: {'line': b'-- Found PythonExtra: .so  \n'}
+[6.609575] (-) TimerEvent: {}
+[6.635777] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[6.635921] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[6.709624] (-) TimerEvent: {}
+[6.712538] (custom_teleop_messages) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[6.727980] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[6.728685] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[6.796745] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[6.809687] (-) TimerEvent: {}
+[6.875590] (gripper_traj_passthrough) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[6.875752] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Configured cppcheck include dirs: /home/aist/hisham/ARC_ROS2_TIAGO/gripper_traj_passthrough/include;$<BUILD_INTERFACE:/home/aist/hisham/ARC_ROS2_TIAGO/gripper_traj_passthrough/include>\n'}
+[6.875821] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[6.876576] (gripper_traj_passthrough) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[6.878028] (gripper_traj_passthrough) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[6.878090] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[6.878408] (gripper_traj_passthrough) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[6.903642] (custom_teleop_messages) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[6.904443] (custom_teleop_messages) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[6.909744] (-) TimerEvent: {}
+[6.916297] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Configuring done\n'}
+[6.916408] (custom_teleop_messages) StdoutLine: {'line': b'-- Configuring done\n'}
+[6.933528] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Generating done\n'}
+[6.935948] (gripper_traj_passthrough) StdoutLine: {'line': b'-- Build files have been written to: /home/aist/hisham/ARC_ROS2_TIAGO/build/gripper_traj_passthrough\n'}
+[6.941927] (gripper_traj_passthrough) JobEnded: {'identifier': 'gripper_traj_passthrough', 'rc': 'SIGINT'}
+[7.009793] (-) TimerEvent: {}
+[7.060208] (custom_teleop_messages) StdoutLine: {'line': b'-- Generating done\n'}
+[7.067391] (custom_teleop_messages) StdoutLine: {'line': b'-- Build files have been written to: /home/aist/hisham/ARC_ROS2_TIAGO/build/custom_teleop_messages\n'}
+[7.075444] (custom_teleop_messages) JobEnded: {'identifier': 'custom_teleop_messages', 'rc': 'SIGINT'}
+[7.075933] (bio_ik) JobSkipped: {'identifier': 'bio_ik'}
+[7.075982] (ik_teleop) JobSkipped: {'identifier': 'ik_teleop'}
+[7.075994] (-) EventReactorShutdown: {}

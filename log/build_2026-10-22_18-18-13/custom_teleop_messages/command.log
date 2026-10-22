@@ -1,0 +1,1 @@
+Invoking command in '/home/aist/hisham/ARC_ROS2_TIAGO/build/custom_teleop_messages': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/aist/hisham/ARC_ROS2_TIAGO/custom_teleop_messages -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/custom_teleop_messages
