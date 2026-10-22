@@ -6,6 +6,8 @@
 #include <custom_teleop_messages/msg/xr_mod.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/buffer.h>
+#include <tf2_ros/transform_listener.h>
 
 class bridge : public rclcpp::Node
 {
@@ -42,6 +44,19 @@ class bridge : public rclcpp::Node
             enable_left_ = this->get_parameter("enable_left").as_bool();
             enable_right_ = this->get_parameter("enable_right").as_bool();
             enable_head_ = this->get_parameter("enable_head").as_bool();
+
+            // Relative mode: the arm follows the change of the controller pose from the moment tracking
+            // (re)started, starting from the arm's current tool pose, instead of the absolute controller pose
+            this->declare_parameter("relative_mode", false);
+            relative_mode_ = this->get_parameter("relative_mode").as_bool();
+            this->declare_parameter("relative_timeout", 0.3);
+            relative_timeout_ = this->get_parameter("relative_timeout").as_double();
+            this->declare_parameter("left_tool_frame", std::string("arm_left_tool_link"));
+            left_.tool_frame = this->get_parameter("left_tool_frame").as_string();
+            this->declare_parameter("right_tool_frame", std::string("arm_right_tool_link"));
+            right_.tool_frame = this->get_parameter("right_tool_frame").as_string();
+            tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+            tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
             tool_left_trans_ = get_transformation("left_tool_trans");
             tool_right_trans_ = get_transformation("right_tool_trans");
@@ -88,6 +103,8 @@ class bridge : public rclcpp::Node
             if (enable_left_)
             {
                 transform_pose(message->left_controller_pose, Left.pose, world_left_trans_, tool_left_trans_);
+                if (relative_mode_ && !make_relative(left_, Left.pose, time))
+                    return;
                 left_squeeze.data = message->left_squeeze;
                 L_pose_pub_->publish(Left);
                 L_grip_pub_->publish(left_squeeze);
@@ -95,6 +112,8 @@ class bridge : public rclcpp::Node
             if (enable_right_)
             {
                 transform_pose(message->right_controller_pose, Right.pose, world_right_trans_, tool_right_trans_);
+                if (relative_mode_ && !make_relative(right_, Right.pose, time))
+                    return;
                 right_squeeze.data = message->right_squeeze;
                 R_pose_pub_->publish(Right);
                 R_grip_pub_->publish(right_squeeze);
@@ -105,6 +124,45 @@ class bridge : public rclcpp::Node
                 Head_pose_pub_->publish(Head);
             }
         }
+
+    struct Clutch
+    {
+        std::string tool_frame;
+        bool engaged = false;
+        rclcpp::Time last_valid{0, 0, RCL_SYSTEM_TIME};
+        Eigen::Affine3d controller_start, tool_start;
+    };
+
+    // Replaces the controller pose with the arm's start pose moved by the controller's motion since the latch
+    bool make_relative(Clutch &clutch, geometry_msgs::msg::Pose &pose, const rclcpp::Time &now)
+    {
+        Eigen::Affine3d controller;
+        tf2::convert(pose, controller);
+
+        if (!clutch.engaged || (now - clutch.last_valid).seconds() > relative_timeout_)
+        {
+            try
+            {
+                clutch.tool_start = tf2::transformToEigen(
+                    tf_buffer_->lookupTransform(base_link_, clutch.tool_frame, tf2::TimePointZero));
+            }
+            catch (const tf2::TransformException &ex)
+            {
+                RCLCPP_WARN_STREAM_THROTTLE(this->get_logger(), *this->get_clock(), 2000,
+                    "Cannot latch " << clutch.tool_frame << ": " << ex.what());
+                return false;
+            }
+            clutch.controller_start = controller;
+            clutch.engaged = true;
+        }
+        clutch.last_valid = now;
+
+        Eigen::Affine3d target = Eigen::Affine3d::Identity();
+        target.linear() = (controller.linear() * clutch.controller_start.linear().inverse()) * clutch.tool_start.linear();
+        target.translation() = clutch.tool_start.translation() + (controller.translation() - clutch.controller_start.translation());
+        tf2::convert(target, pose);
+        return true;
+    }
 
     static bool is_empty(const geometry_msgs::msg::Pose &pose)
     {
@@ -163,6 +221,11 @@ class bridge : public rclcpp::Node
     
     std::string base_link_;
     bool enable_left_, enable_right_, enable_head_;
+    bool relative_mode_;
+    double relative_timeout_;
+    Clutch left_, right_;
+    std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
+    std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
     Eigen::Affine3d tool_left_trans_, tool_right_trans_, tool_head_trans_, world_left_trans_, world_right_trans_, world_head_trans_;
 

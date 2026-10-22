@@ -7,6 +7,12 @@ teleop_bridge:
     enable_right: true
     enable_head: false
 
+    # true: the arm follows the controller's motion from where it is now (latched at start and after tracking dropouts)
+    relative_mode: true
+    relative_timeout: 0.3
+    right_tool_frame: "arm_right_tool_link"
+    left_tool_frame: "arm_left_tool_link"
+
     left_pose_topic:  "/left_arm_cmd"
     right_pose_topic: "/right_arm_cmd"
     head_pose_topic:  "/head_cmd"
