@@ -1,1 +1,0 @@
-Invoking command in '/home/aist/hisham/ARC_ROS2_TIAGO/build/gripper_traj_passthrough': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/aist/hisham/ARC_ROS2_TIAGO/gripper_traj_passthrough -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/gripper_traj_passthrough

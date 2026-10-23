@@ -1,8 +1,0 @@
-msg/XRMod.idl
-msg/XRMod.msg
-msg/XRPose.idl
-msg/XRPose.msg
-srv/BoolTrigger.idl
-srv/BoolTrigger.srv
-srv/BoolTrigger_Request.msg
-srv/BoolTrigger_Response.msg

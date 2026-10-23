@@ -1,2 +1,0 @@
-Invoking command in '/home/aist/hisham/ARC_ROS2_TIAGO/build/fp': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/aist/hisham/ARC_ROS2_TIAGO/fp -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/fp
-Invoked command in '/home/aist/hisham/ARC_ROS2_TIAGO/build/fp' returned '1': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/aist/hisham/ARC_ROS2_TIAGO/fp -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/aist/hisham/ARC_ROS2_TIAGO/install/fp
