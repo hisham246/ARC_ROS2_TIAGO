@@ -108,6 +108,7 @@ protected:
         std::vector<double> max_speeds_;
         
         double allowable_lag_;
+        bool send_velocities_ = true;
     };
 
     // Nested class for additional joint goal

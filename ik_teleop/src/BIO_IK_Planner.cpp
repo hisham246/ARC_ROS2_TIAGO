@@ -566,6 +566,9 @@ joint_names_(joint_names)
     declare_if_missing(parent.Node_, group_name_+".allowable_lag", -1.0d);
     allowable_lag_ = parent.Node_->get_parameter(group_name_+".allowable_lag").as_double();
 
+    declare_if_missing(parent.Node_, "send_velocities", true);
+    send_velocities_ = parent.Node_->get_parameter("send_velocities").as_bool();
+
     pub_ = parent.Node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(pub_topic, 1);
     
     traj_.joint_names = joint_names_;
@@ -677,8 +680,12 @@ void BIO_IK_Planner::BIO_IK_Group::create_trajectory(std::vector<double> positio
     }
     traj_.header.frame_id = base_link_;
     traj_.points[0].positions = position;
-    traj_.points[0].velocities = velocity;
-    traj_.points[0].accelerations = acceleration;
+    // Controllers that reject a last point with non-zero velocity (e.g. Gazebo) get positions only
+    if (send_velocities_)
+    {
+        traj_.points[0].velocities = velocity;
+        traj_.points[0].accelerations = acceleration;
+    }
     
     traj_.points[0].time_from_start = rclcpp::Duration::from_seconds(1.0/freq_);
 }
