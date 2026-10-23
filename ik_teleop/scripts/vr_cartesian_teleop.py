@@ -90,10 +90,13 @@ class VRCartesianTeleop(Node):
     # --- inputs ---------------------------------------------------------------------------------
     def xr_callback(self, msg):
         pose = msg.right_controller_pose if self.side == 'right' else msg.left_controller_pose
-        pos, rot = to_np(pose)
-        if np.abs(pos).sum() < 0.001:
-            self.vr = None  # untracked controllers report the origin
+        quat = [pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w]
+        position = [pose.position.x, pose.position.y, pose.position.z]
+        # untracked controllers report the origin and an all-zero quaternion
+        if sum(abs(v) for v in position) < 0.001 or np.linalg.norm(quat) < 1e-6:
+            self.vr = None
             return
+        pos, rot = to_np(pose)
         self.vr = (pos, rot, self.get_clock().now())
 
     def toggle_callback(self, request, response):
