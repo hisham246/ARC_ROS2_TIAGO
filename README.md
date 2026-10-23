@@ -66,6 +66,16 @@ ros2 topic hz /left_arm_cmd
 ros2 topic echo /arm_left_controller/joint_trajectory --once
 ```
 
+# Cartesian impedance mode (right arm)
+Streams the right VR controller to `tiago_pro_custom_controllers/CartesianImpedanceController` instead of the IK planner. The controller must already be running on the robot with `cartesian_impedance_controller_right` active (see the controller repo's instructions). `control_node` and MoveIt are not needed.
+
+```
+ros2 launch ik_teleop launch_vr_cartesian.py
+ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0
+```
+
+The node publishes `geometry_msgs/Pose` to `/cartesian_impedance_controller_right/desired_pose` in the `torso_lift_link` frame. It starts disabled. The Unity "toggle tracking" button enables it (the arm then follows the controller's motion from its current pose); "stop robot" disables it and the controller holds the last pose. Limits and speeds are parameters of `vr_cartesian_teleop` (`max_translation`, `max_rotation`, `max_linear_speed`, `max_angular_speed`, `vr_yaw`).
+
 # Known issues
 - The bridge drops a message if any of the three poses is at the origin, so both controllers must be tracked for the arms to move.
 - The planner rejects any solution in which the grippers collide (`Planned End State Colliding`), for example when both controllers are held close together.

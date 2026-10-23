@@ -72,6 +72,11 @@ install(TARGETS control_node
   teleop_msg_bridge
   DESTINATION lib/${PROJECT_NAME})
 
+install(PROGRAMS
+  scripts/vr_cartesian_teleop.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}
