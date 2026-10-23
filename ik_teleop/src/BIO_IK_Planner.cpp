@@ -285,6 +285,19 @@ bool BIO_IK_Planner::plan()
         RCLCPP_INFO_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 1000,
             "IK found: " << found_ik << ", solution fitness: " << query.solution_fitness);
 
+        for (auto& group : bio_groups_)
+        {
+            if (group->is_passive())
+                continue;
+            const Eigen::Isometry3d goal = group->get_goal();
+            const Eigen::Isometry3d current = current_state_->getFrameTransform(group->goal_link_);
+            const Eigen::Isometry3d solution = solution_state.getFrameTransform(group->goal_link_);
+            RCLCPP_INFO_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 1000,
+                group->group_name_ << ": goal-current " << (goal.translation() - current.translation()).norm()
+                << " m, goal-solution " << (goal.translation() - solution.translation()).norm()
+                << " m, solution-current " << (solution.translation() - current.translation()).norm() << " m");
+        }
+
         if (!found_ik)
         {
             RCLCPP_WARN_STREAM_THROTTLE(Node_->get_logger(), *(Node_->get_clock()), 500, "No IK Found");
