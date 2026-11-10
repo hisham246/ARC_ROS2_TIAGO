@@ -74,6 +74,7 @@ install(TARGETS control_node
 
 install(PROGRAMS
   scripts/vr_cartesian_teleop.py
+  scripts/move_to_ready_pose.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

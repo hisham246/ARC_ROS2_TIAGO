@@ -6,6 +6,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import AnyLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
@@ -27,7 +28,8 @@ def generate_launch_description():
         name='vr_cartesian_teleop',
         executable='vr_cartesian_teleop.py',
         output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
+        parameters=[{'use_sim_time': use_sim_time,
+                     'translation_only': ParameterValue(LaunchConfiguration('translation_only'), value_type=bool)}],
     )
 
     gripper = IncludeLaunchDescription(
@@ -38,6 +40,8 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
+        DeclareLaunchArgument('translation_only', default_value='false',
+                              description='Keep the end effector orientation, follow only the controller position'),
         bridge_node,
         teleop_node,
         gripper,

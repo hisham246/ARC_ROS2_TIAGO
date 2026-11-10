@@ -74,7 +74,11 @@ ros2 launch ik_teleop launch_vr_cartesian.py
 ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0
 ```
 
-The node publishes `geometry_msgs/Pose` to `/cartesian_impedance_controller_right/desired_pose` in the `torso_lift_link` frame. It starts disabled. The Unity "toggle tracking" button enables it (the arm then follows the controller's motion from its current pose); "stop robot" disables it and the controller holds the last pose. Limits and speeds are parameters of `vr_cartesian_teleop` (`max_translation`, `max_rotation`, `max_linear_speed`, `max_angular_speed`, `vr_yaw`).
+The node publishes `geometry_msgs/Pose` to `/cartesian_impedance_controller_right/desired_pose` in the `torso_lift_link` frame. It starts disabled. The Unity "toggle tracking" button enables it (the arm then follows the controller's motion from its current pose); "stop robot" disables it and the controller holds the last pose. `translation_only:=true` (launch argument) keeps the end effector orientation and follows only the controller position.
+
+To bring the arm to a comfortable manipulation pose first, run `ros2 run ik_teleop move_to_ready_pose.py` (add `--ros-args -p use_sim_time:=true` in Gazebo). It shows the planned move, asks for confirmation, moves slowly through the joint trajectory controller and then switches back to the impedance controller. The motion is a straight line in joint space and is not collision checked.
+
+Limits and speeds are parameters of `vr_cartesian_teleop` (`max_translation`, `max_rotation`, `max_linear_speed`, `max_angular_speed`, `vr_yaw`).
 
 # Known issues
 - The bridge drops a message if any of the three poses is at the origin, so both controllers must be tracked for the arms to move.

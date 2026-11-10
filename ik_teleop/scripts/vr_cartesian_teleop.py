@@ -51,6 +51,7 @@ class VRCartesianTeleop(Node):
         self.declare_parameter('max_angular_speed', 1.0)    # [rad/s]
         self.declare_parameter('tracking_timeout', 0.2)     # [s] older controller data counts as lost
         self.declare_parameter('start_enabled', False)
+        self.declare_parameter('translation_only', False)   # keep the orientation, follow only the position
 
         side = self.get_parameter('side').value
         self.root_frame = self.get_parameter('root_frame').value
@@ -62,6 +63,7 @@ class VRCartesianTeleop(Node):
         self.max_linear_speed = self.get_parameter('max_linear_speed').value
         self.max_angular_speed = self.get_parameter('max_angular_speed').value
         self.tracking_timeout = self.get_parameter('tracking_timeout').value
+        self.translation_only = self.get_parameter('translation_only').value
         self.align = Rotation.from_euler('z', self.get_parameter('vr_yaw').value)
         self.side = side
 
@@ -85,7 +87,8 @@ class VRCartesianTeleop(Node):
         if self.get_parameter('start_enabled').value:
             self.enable()
         self.get_logger().info(
-            f'VR Cartesian teleop for the {side} arm ready; disabled until toggle_tracking is called.')
+            f'VR Cartesian teleop for the {side} arm ready ({"translation only" if self.translation_only else "position and orientation"}); '
+            'disabled until toggle_tracking is called.')
 
     # --- inputs ---------------------------------------------------------------------------------
     def xr_callback(self, msg):
@@ -155,7 +158,7 @@ class VRCartesianTeleop(Node):
 
             desired_pos = base_pos + self.align.apply(vr_pos - vr_pos0) * self.position_scale
             delta_rot = self.align * (vr_rot * vr_rot0.inv()) * self.align.inv()
-            desired_rot = delta_rot * base_rot
+            desired_rot = base_rot if self.translation_only else delta_rot * base_rot
 
             origin_pos, origin_rot = self.origin
             desired_pos = np.clip(desired_pos, origin_pos - self.max_translation,
