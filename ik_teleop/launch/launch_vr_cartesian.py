@@ -10,7 +10,7 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_pal.arg_utils import LaunchArgumentsBase, read_launch_argument
-from moveit_configs_utils import MoveItConfigsBuilder
+from launch_param_builder import load_xacro
 from tiago_pro_description.launch_arguments import TiagoProArgs
 
 CONTROLLER_TOPIC = '/cartesian_impedance_controller_right/desired_pose'
@@ -84,11 +84,8 @@ def start_nodes(context, *args, **kwargs):
         }
         srdf_file_path = Path(os.path.join(
             get_package_share_directory('ik_teleop'), 'config', 'tiago_pro.srdf.xacro'))
-        # robot_description is read from the /robot_description topic when the parameter is empty
-        moveit_config = (
-            MoveItConfigsBuilder('tiago_pro')
-            .robot_description_semantic(file_path=srdf_file_path, mappings=srdf_input_args)
-        )
+        # only the SRDF (collision rules) is needed; the URDF is read from the /robot_description topic
+        srdf = load_xacro(srdf_file_path, srdf_input_args)
         guard_node = Node(
             package='ik_teleop',
             name='cartesian_collision_guard',
@@ -98,7 +95,7 @@ def start_nodes(context, *args, **kwargs):
                 {'use_sim_time': use_sim_time,
                  'input_topic': GUARD_INPUT_TOPIC,
                  'output_topic': CONTROLLER_TOPIC},
-                moveit_config.to_dict(),
+                {'robot_description_semantic': srdf},
             ],
         )
         actions.append(guard_node)
