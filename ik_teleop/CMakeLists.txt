@@ -68,8 +68,20 @@ ament_target_dependencies(
   "tf2_geometry_msgs"
 )
 
+add_executable(cartesian_collision_guard src/cartesian_collision_guard.cpp)
+target_compile_features(cartesian_collision_guard PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  cartesian_collision_guard
+  "moveit_common"
+  "moveit_core"
+  "moveit_ros_planning"
+  "rclcpp"
+  "geometry_msgs"
+)
+
 install(TARGETS control_node
   teleop_msg_bridge
+  cartesian_collision_guard
   DESTINATION lib/${PROJECT_NAME})
 
 install(PROGRAMS

@@ -51,6 +51,7 @@ class VRCartesianTeleop(Node):
         self.declare_parameter('max_angular_speed', 1.0)    # [rad/s]
         self.declare_parameter('tracking_timeout', 0.2)     # [s] older controller data counts as lost
         self.declare_parameter('start_enabled', False)
+        self.declare_parameter('output_topic', '')          # default: the controller's desired_pose
         self.declare_parameter('translation_only', False)   # keep the orientation, follow only the position
 
         side = self.get_parameter('side').value
@@ -70,8 +71,9 @@ class VRCartesianTeleop(Node):
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
 
-        self.pose_pub = self.create_publisher(
-            Pose, f'/cartesian_impedance_controller_{side}/desired_pose', 10)
+        output_topic = self.get_parameter('output_topic').value or \
+            f'/cartesian_impedance_controller_{side}/desired_pose'
+        self.pose_pub = self.create_publisher(Pose, output_topic, 10)
         self.xr_sub = self.create_subscription(XRMod, '/xr_input', self.xr_callback, 1)
         self.create_service(BoolTrigger, 'toggle_tracking', self.toggle_callback)
         self.create_service(BoolTrigger, 'stop_robot', self.stop_callback)

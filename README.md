@@ -76,6 +76,8 @@ ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0
 
 The node publishes `geometry_msgs/Pose` to `/cartesian_impedance_controller_right/desired_pose` in the `torso_lift_link` frame. It starts disabled. The Unity "toggle tracking" button enables it (the arm then follows the controller's motion from its current pose); "stop robot" disables it and the controller holds the last pose. `translation_only:=true` (launch argument) keeps the end effector orientation and follows only the controller position.
 
+The collision guard (`cartesian_collision_guard`, on by default; disable with `collision_guard:=false`) sits between the VR node and the controller and pulls the target back when the arm would come closer than `margin` (3 cm) to the rest of the robot or to planning scene objects. It uses the measured joint states and the robot SRDF collision rules; the impedance controller itself is not modified.
+
 To bring the arm to a comfortable manipulation pose first, run `ros2 run ik_teleop move_to_ready_pose.py` (add `--ros-args -p use_sim_time:=true` in Gazebo). It shows the planned move, asks for confirmation, moves slowly through the joint trajectory controller and then switches back to the impedance controller. The motion is a straight line in joint space and is not collision checked.
 
 Limits and speeds are parameters of `vr_cartesian_teleop` (`max_translation`, `max_rotation`, `max_linear_speed`, `max_angular_speed`, `vr_yaw`).
