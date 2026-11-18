@@ -19,7 +19,8 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 from rclpy.time import Time
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Point, Pose, PoseStamped
+from visualization_msgs.msg import Marker, MarkerArray
 from scipy.spatial.transform import Rotation
 from tf2_ros import Buffer, TransformListener, TransformException
 
@@ -53,6 +54,8 @@ class VRCartesianTeleop(Node):
         self.declare_parameter('start_enabled', False)
         self.declare_parameter('output_topic', '')          # default: the controller's desired_pose
         self.declare_parameter('translation_only', False)   # keep the orientation, follow only the position
+        self.declare_parameter('debug_viz', True)           # publish RViz debug topics under ~/debug
+        self.declare_parameter('trail_length', 300)         # points kept per trail
 
         side = self.get_parameter('side').value
         self.root_frame = self.get_parameter('root_frame').value
@@ -74,6 +77,13 @@ class VRCartesianTeleop(Node):
         output_topic = self.get_parameter('output_topic').value or \
             f'/cartesian_impedance_controller_{side}/desired_pose'
         self.pose_pub = self.create_publisher(Pose, output_topic, 10)
+        self.debug_viz = self.get_parameter('debug_viz').value
+        self.trail_length = self.get_parameter('trail_length').value
+        self.target_pub = self.create_publisher(PoseStamped, '/vr_cartesian/debug/target', 10)
+        self.command_pub = self.create_publisher(PoseStamped, '/vr_cartesian/debug/command', 10)
+        self.marker_pub = self.create_publisher(MarkerArray, '/vr_cartesian/debug/trails', 10)
+        self.trails = {'target': [], 'command': [], 'actual': []}
+        self.last_viz = None
         self.xr_sub = self.create_subscription(XRMod, '/xr_input', self.xr_callback, 1)
         self.create_service(BoolTrigger, 'toggle_tracking', self.toggle_callback)
         self.create_service(BoolTrigger, 'stop_robot', self.stop_callback)
@@ -132,6 +142,8 @@ class VRCartesianTeleop(Node):
         self.ref = None
         self.last_tick = None
         self.enabled = True
+        for trail in self.trails.values():
+            trail.clear()
         self.get_logger().info(f'Enabled. Start pose {pos.round(3).tolist()} in {self.root_frame}.')
 
     def disable(self, reason):
@@ -150,6 +162,7 @@ class VRCartesianTeleop(Node):
 
         tracked = self.vr is not None and \
             (now - self.vr[2]).nanoseconds * 1e-9 < self.tracking_timeout
+        target = None
         if not tracked:
             self.ref = None  # freeze the command; re-latch when tracking returns
         else:
@@ -170,9 +183,68 @@ class VRCartesianTeleop(Node):
             if angle > self.max_rotation:
                 desired_rot = Rotation.from_rotvec(away * self.max_rotation / angle) * origin_rot
 
-            self.cmd = self.slew(self.cmd, (desired_pos, desired_rot), dt)
+            target = (desired_pos, desired_rot)
+            self.cmd = self.slew(self.cmd, target, dt)
 
         self.publish(self.cmd)
+        if self.debug_viz:
+            self.visualize(now, target)
+
+    def visualize(self, now, desired):
+        if self.last_viz is not None and (now - self.last_viz).nanoseconds < 33e6:
+            return
+        self.last_viz = now
+        stamp = now.to_msg()
+
+        def stamped(pos, rot):
+            msg = PoseStamped()
+            msg.header.stamp, msg.header.frame_id = stamp, self.root_frame
+            msg.pose.position.x, msg.pose.position.y, msg.pose.position.z = pos.tolist()
+            q = rot.as_quat().tolist()
+            msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w = q
+            return msg
+
+        # target: where the VR controller asks the end effector to be (before clamp and slew)
+        if desired is not None:
+            self.target_pub.publish(stamped(*desired))
+            self.add_trail('target', desired[0])
+        self.command_pub.publish(stamped(*self.cmd))
+        self.add_trail('command', self.cmd[0])
+        try:
+            t = self.tf_buffer.lookup_transform(self.root_frame, self.ee_frame, Time()).transform.translation
+            self.add_trail('actual', np.array([t.x, t.y, t.z]))
+        except TransformException:
+            pass
+
+        colors = {'target': (1.0, 0.2, 0.2), 'command': (0.2, 1.0, 0.2), 'actual': (0.3, 0.5, 1.0)}
+        markers = MarkerArray()
+        for i, (name, points) in enumerate(self.trails.items()):
+            m = Marker()
+            m.header.stamp, m.header.frame_id = stamp, self.root_frame
+            m.ns, m.id, m.type, m.action = name, i, Marker.LINE_STRIP, Marker.ADD
+            m.scale.x = 0.006
+            m.color.r, m.color.g, m.color.b = colors[name]
+            m.color.a = 1.0
+            m.pose.orientation.w = 1.0
+            m.points = [Point(x=float(p[0]), y=float(p[1]), z=float(p[2])) for p in points]
+            markers.markers.append(m)
+        # box = clamp limits around the pose at enable
+        box = Marker()
+        box.header.stamp, box.header.frame_id = stamp, self.root_frame
+        box.ns, box.id, box.type, box.action = 'limits', 10, Marker.CUBE, Marker.ADD
+        o = self.origin[0]
+        box.pose.position.x, box.pose.position.y, box.pose.position.z = o.tolist()
+        box.pose.orientation.w = 1.0
+        box.scale.x = box.scale.y = box.scale.z = 2.0 * self.max_translation
+        box.color.r = box.color.g = box.color.b = 1.0
+        box.color.a = 0.08
+        markers.markers.append(box)
+        self.marker_pub.publish(markers)
+
+    def add_trail(self, name, pos):
+        trail = self.trails[name]
+        trail.append(pos.copy())
+        del trail[:-self.trail_length]
 
     def slew(self, cmd, desired, dt):
         pos, rot = cmd

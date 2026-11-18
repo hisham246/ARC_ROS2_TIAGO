@@ -95,7 +95,7 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}
 )
 install(DIRECTORY
-  config
+  config rviz
   DESTINATION share/${PROJECT_NAME}
 )
 
