@@ -40,7 +40,7 @@ from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectoryPoint
 
 # nullspace_pose of cartesian_impedance_controller_configuration_right.yaml
-DEFAULT_READY_RIGHT = [-1.863, -1.1827, 0.48339, -1.5989, 0.2603, -1.0713, 1.16829]
+DEFAULT_READY_RIGHT = [-3.19, -1.61, 0.83, -0.87, 2.82, 1.27, -0.02]
 # a peak/average velocity ratio of about 2 is assumed for the controller's spline
 PEAK_FACTOR = 2.0
 
