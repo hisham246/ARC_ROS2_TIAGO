@@ -1,6 +1,8 @@
 Panels:
   - Class: rviz_common/Displays
     Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
 Visualization Manager:
   Class: ""
   Global Options:
@@ -51,13 +53,3 @@ Visualization Manager:
       Name: TF
       Enabled: false
   Value: true
-  Views:
-    Current:
-      Class: rviz_default_plugins/Orbit
-      Distance: 1.6
-      Focal Point:
-        X: 0.4
-        Y: -0.2
-        Z: 0.0
-      Pitch: 0.5
-      Yaw: 2.6
