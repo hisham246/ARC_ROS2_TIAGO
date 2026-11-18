@@ -19,7 +19,8 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 from rclpy.time import Time
-from geometry_msgs.msg import Point, Pose, PoseStamped
+from geometry_msgs.msg import Point, Pose, PoseStamped, Vector3Stamped
+from std_msgs.msg import Float64
 from visualization_msgs.msg import Marker, MarkerArray
 from scipy.spatial.transform import Rotation
 from tf2_ros import Buffer, TransformListener, TransformException
@@ -82,6 +83,12 @@ class VRCartesianTeleop(Node):
         self.target_pub = self.create_publisher(PoseStamped, '/vr_cartesian/debug/target', 10)
         self.command_pub = self.create_publisher(PoseStamped, '/vr_cartesian/debug/command', 10)
         self.marker_pub = self.create_publisher(MarkerArray, '/vr_cartesian/debug/trails', 10)
+        # tracking error: command (after clamp/slew) minus actual end effector, in root_frame
+        self.err_vec_pub = self.create_publisher(Vector3Stamped, '/vr_cartesian/tracking_error/position', 10)
+        self.err_dist_pub = self.create_publisher(Float64, '/vr_cartesian/tracking_error/distance', 10)
+        self.err_angle_pub = self.create_publisher(Float64, '/vr_cartesian/tracking_error/angle', 10)
+        # lag of the whole chain: raw VR target minus actual end effector
+        self.lag_dist_pub = self.create_publisher(Float64, '/vr_cartesian/tracking_error/target_distance', 10)
         self.trails = {'target': [], 'command': [], 'actual': []}
         self.last_viz = None
         self.xr_sub = self.create_subscription(XRMod, '/xr_input', self.xr_callback, 1)
@@ -187,8 +194,28 @@ class VRCartesianTeleop(Node):
             self.cmd = self.slew(self.cmd, target, dt)
 
         self.publish(self.cmd)
+        self.publish_error(now, target)
         if self.debug_viz:
             self.visualize(now, target)
+
+    def publish_error(self, now, target):
+        try:
+            tf = self.tf_buffer.lookup_transform(self.root_frame, self.ee_frame, Time())
+        except TransformException:
+            return
+        t, q = tf.transform.translation, tf.transform.rotation
+        actual_pos = np.array([t.x, t.y, t.z])
+        actual_rot = Rotation.from_quat([q.x, q.y, q.z, q.w])
+        error = self.cmd[0] - actual_pos
+        vec = Vector3Stamped()
+        vec.header.stamp, vec.header.frame_id = now.to_msg(), self.root_frame
+        vec.vector.x, vec.vector.y, vec.vector.z = error.tolist()
+        self.err_vec_pub.publish(vec)
+        self.err_dist_pub.publish(Float64(data=float(np.linalg.norm(error))))
+        self.err_angle_pub.publish(
+            Float64(data=float(np.linalg.norm((self.cmd[1] * actual_rot.inv()).as_rotvec()))))
+        if target is not None:
+            self.lag_dist_pub.publish(Float64(data=float(np.linalg.norm(target[0] - actual_pos))))
 
     def visualize(self, now, desired):
         if self.last_viz is not None and (now - self.last_viz).nanoseconds < 33e6:
