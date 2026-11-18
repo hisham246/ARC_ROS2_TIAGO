@@ -118,7 +118,7 @@ public:
             std::exit(1);
         }
 
-        pub_ = node_->create_publisher<geometry_msgs::msg::Pose>(output_topic, 10);
+        pub_ = node_->create_publisher<geometry_msgs::msg::Pose>(output_topic, 1);
         sub_ = node_->create_subscription<geometry_msgs::msg::Pose>(
             input_topic, 10, [this](const geometry_msgs::msg::Pose::SharedPtr msg) {
                 target_ = *msg;

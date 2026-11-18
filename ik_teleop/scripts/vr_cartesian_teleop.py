@@ -76,7 +76,7 @@ class VRCartesianTeleop(Node):
 
         output_topic = self.get_parameter('output_topic').value or \
             f'/cartesian_impedance_controller_{side}/desired_pose'
-        self.pose_pub = self.create_publisher(Pose, output_topic, 10)
+        self.pose_pub = self.create_publisher(Pose, output_topic, 1)
         self.debug_viz = self.get_parameter('debug_viz').value
         self.trail_length = self.get_parameter('trail_length').value
         self.target_pub = self.create_publisher(PoseStamped, '/vr_cartesian/debug/target', 10)
