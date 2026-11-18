@@ -53,3 +53,22 @@ Visualization Manager:
       Name: TF
       Enabled: false
   Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Target Frame: torso_lift_link
+      Distance: 1.0
+      Focal Point:
+        X: 0.4
+        Y: -0.2
+        Z: 0.0
+      Focal Shape Size: 0.05
+      Invert Z Axis: false
+      Near Clip Distance: 0.01
+      Pitch: 0.5
+      Yaw: 2.6
+      Value: Orbit (rviz)
+  Window Geometry:
+    Height: 900
+    Width: 1400
